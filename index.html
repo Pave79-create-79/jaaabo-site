@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автоматизирую рутину для малого бизнеса: боты, парсинг, интеграции</title>
+    <meta name="description" content="Разработка сайтов на Python, автоматизация бизнеса, парсинг данных, Telegram-боты. Быстро, качественно, с гарантией.">
+    <meta name="keywords" content="разработка сайтов, Python, автоматизация, парсинг, Telegram-боты">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (saved === 'dark' || (!saved && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #ec4899;
+            --accent-2: #f59e0b;
+            --bg: #fafafa;
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --text: #0f172a;
+            --text-soft: #334155;
+            --muted: #64748b;
+            --border: #e5e7eb;
+            --border-soft: #f1f5f9;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+            --shadow-lg: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --radius-lg: 24px;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --card-border: rgba(255, 255, 255, 0.6);
+            --card-inset: rgba(255, 255, 255, 0.8);
+        }
+
+        html.dark {
+            --bg: #0b1120;
+            --surface: #111827;
+            --surface-2: #1e293b;
+            --text: #f1f5f9;
+            --text-soft: #cbd5e1;
+            --muted: #94a3b8;
+            --border: #334155;
+            --border-soft: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-border: rgba(148, 163, 184, 0.15);
+            --card-inset: rgba(255, 255, 255, 0.05);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 20% 10%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 5%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+                radial-gradient(at 95% 60%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
+                radial-gradient(at 5% 70%, rgba(96, 165, 250, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        html.dark body {
+            background-image: 
+                radial-gradient(at 20% 10%, rgba(99, 102, 241, 0.25) 0px, transparent 50%),
+                radial-gradient(at 80% 5%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 95% 60%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
+                radial-gradient(at 5% 70%, rgba(96, 165, 250, 0.18) 0px, transparent 50%);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
+
+        html.dark body::before {
+            background-image:
+                linear-gradient(rgba(241, 245, 249, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(241, 245, 249, 0.04) 1px, transparent 1px);
+        }
+
+        .bg-decoration {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .bg-decoration::before, .bg-decoration::after {
+            content: ''; position: absolute; border-radius: 50%;
+            filter: blur(120px); opacity: 0.35;
+            animation: float 24s ease-in-out infinite; will-change: transform;
+        }
+        .bg-decoration::before {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, #a78bfa, transparent 70%);
+            top: -280px; right: -160px;
+        }
+        .bg-decoration::after {
+            width: 520px; height: 520px;
+            background: radial-gradient(circle, #60a5fa, transparent 70%);
+            bottom: -220px; left: -180px; animation-delay: -12s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(60px, -40px) scale(1.08); }
+        }
+
+        /* ===== ИНТЕРЬЕР: Шум ===== */
+        .bg-decoration::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35' /%3E%3C/svg%3E");
+            opacity: 0.04;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        /* ===== ПАРЯЩИЙ HEADER ===== */
+        header {
+            background: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            padding: 0.9rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.03),
+                0 8px 24px -12px rgba(15, 23, 42, 0.06);
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.05),
+                0 12px 32px -12px rgba(15, 23, 42, 0.15);
+        }
+        html.dark header {
+            background: rgba(15, 23, 42, 0.75);
+            border-bottom-color: rgba(51, 65, 85, 0.4);
+        }
+        html.dark header.scrolled {
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .logo {
+            font-size: 1.25rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; letter-spacing: -0.03em; white-space: nowrap; cursor: pointer;
+            text-decoration: none; flex-shrink: 0;
+        }
+
+        nav { display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: flex-end; }
+        nav a {
+            text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 500;
+            padding: 0.55rem 0.95rem; border-radius: 10px;
+            transition: color 0.2s ease, background 0.2s ease; white-space: nowrap;
+        }
+        nav a:hover { color: var(--primary); background: rgba(99, 102, 241, 0.08); }
+        nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+        #themeToggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
+            flex-shrink: 0;
+            color: var(--text);
+        }
+        #themeToggle:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+            transform: rotate(20deg);
+        }
+        #themeToggle:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* ===== СТАТУС-БЕЙДЖ ===== */
+        .status-badge {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--surface);
+            color: var(--text);
+            padding: 10px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.25);
+            border: 1px solid var(--border-soft);
+            z-index: 95;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+        .status-badge.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .status-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px -10px rgba(99, 102, 241, 0.35);
+            border-color: var(--primary);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: statusPulse 2s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes statusPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+            70%  { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        main {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 3rem 2rem 4rem; position: relative; z-index: 1;
+        }
+        .hero {
+            text-align: center; max-width: 760px; width: 100%;
+            animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.15), transparent 65%);
+            filter: blur(60px);
+            z-index: -1;
+            pointer-events: none;
+            animation: heroGlow 6s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow {
+            from { transform: translateX(-50%) scale(1); opacity: 0.8; }
+            to   { transform: translateX(-50%) scale(1.1); opacity: 1; }
+        }
+        html.dark .hero::before {
+            background: radial-gradient(ellipse, rgba(129, 140, 248, 0.3), transparent 65%);
+        }
+        @keyframes fadeInUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .hero h1 {
+            font-size: clamp(2.25rem, 5.5vw, 4rem);
+            margin-bottom: 1.25rem; color: var(--text);
+            letter-spacing: -0.045em; line-height: 1.08; font-weight: 800;
+            text-shadow: 0 2px 20px rgba(15, 23, 42, 0.05);
+        }
+        html.dark .hero h1 { text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); }
+        .hero h1 .gradient {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--accent) 50%, var(--accent-2) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p {
+            font-size: 1.15rem; color: var(--muted); margin-bottom: 2.25rem;
+            max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.7;
+        }
+        .cta-group { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+        .btn {
+            padding: 0.9rem 1.75rem; border-radius: 12px; font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; border: none; font-family: inherit;
+            display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 3px; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; box-shadow: 0 8px 24px -6px rgba(99, 102, 241, 0.5);
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.7s ease;
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -8px rgba(99, 102, 241, 0.65); }
+        .btn-secondary {
+            background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+        }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        .features {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem; margin-top: 4.5rem; max-width: 760px; width: 100%;
+        }
+        .feature {
+            padding: 1.6rem 1.4rem; border-radius: var(--radius); text-align: left;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.6s ease-out;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.8s ease;
+            transform: scale(0.5);
+            pointer-events: none;
+        }
+        .feature:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .feature:hover { transform: translateY(-6px); border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.2); }
+        .feature.js-reveal { opacity: 0; transform: translateY(24px); }
+        .feature.js-reveal.is-visible { opacity: 1; transform: translateY(0); }
+        .feature-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.25rem; margin-bottom: 1rem;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.5);
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .feature:hover .feature-icon {
+            transform: translateY(-4px) rotate(-6deg) scale(1.05);
+        }
+        .feature-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%);
+            pointer-events: none;
+        }
+        .feature h3 { font-size: 1rem; margin-bottom: 0.4rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+        .feature p { font-size: 0.85rem; color: var(--muted); line-height: 1.55; }
+
+        .section { padding: 80px 20px; position: relative; z-index: 1; }
+        .section-alt { background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%); }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-title {
+            text-align: center; font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+            margin-bottom: 0.75rem; color: var(--text); font-weight: 800; letter-spacing: -0.035em; line-height: 1.2;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .section-title::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 80px;
+            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.15), transparent 70%);
+            filter: blur(30px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        html.dark .section-title::before {
+            background: radial-gradient(ellipse, rgba(129, 140, 248, 0.25), transparent 70%);
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 999px;
+            margin: 16px auto 0;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+        }
+        .section-subtitle {
+            text-align: center; color: var(--muted); margin-bottom: 3rem;
+            font-size: 1.05rem; max-width: 560px; margin-left: auto; margin-right: auto;
+        }
+
+        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: stretch; }
+        .price-card {
+            padding: 32px; border-radius: var(--radius);
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+            display: flex; flex-direction: column;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .price-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.8s ease;
+            transform: scale(0.5);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .price-card:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+        
+        .price-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 20px 50px -12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Возвращаем бейдж "Хит" для карточки цен */
+        .price-card.featured::after {
+            content: 'Хит';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.5);
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .price-card h3 { font-size: 1.15rem; color: var(--text); margin-bottom: 0.4rem; font-weight: 700; letter-spacing: -0.02em; position: relative; z-index: 1; }
+        .price-card .desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.4rem; position: relative; z-index: 1; }
+        .price-card .price { font-size: 1.9rem; font-weight: 800; color: var(--text); margin-bottom: 1.4rem; letter-spacing: -0.03em; position: relative; display: inline-block; z-index: 1; }
+        .price-card .price::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 999px;
+            opacity: 0.15;
+            filter: blur(3px);
+        }
+        .price-card .price span {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .price-card ul { list-style: none; padding: 0; margin: 0 0 1.5rem; color: var(--text-soft); font-size: 0.9rem; line-height: 2; position: relative; z-index: 1; }
+        .price-card ul li::before { content: '✓'; color: var(--primary); font-weight: 700; margin-right: 0.5rem; }
+        
+        .price-card .btn { position: relative; z-index: 1; }
+
+        .faq-list { display: flex; flex-direction: column; gap: 14px; max-width: 800px; margin: 0 auto; }
+        .faq-item {
+            padding: 24px 28px; border-radius: var(--radius-sm);
+            border: 1px solid var(--border-soft); transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+        }
+        .faq-item:hover { border-color: rgba(99, 102, 241, 0.3); box-shadow: var(--shadow-md); }
+        .faq-item summary {
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text);
+            list-style: none;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after {
+            content: '+';
+            float: right;
+            color: var(--primary);
+            font-weight: 800;
+        }
+        .faq-item[open] summary::after { content: '−'; }
+        .faq-item[open] summary { margin-bottom: 0.65rem; }
+        .faq-item p { color: var(--text-soft); line-height: 1.7; font-size: 0.95rem; }
+
+        .form-card {
+            max-width: 520px; margin: 0 auto; padding: 36px;
+            background: var(--surface); border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border-soft);
+        }
+        .form-card h3 { color: var(--text); text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 800; letter-spacing: -0.03em; }
+        .form-card .sub { text-align: center; color: var(--muted); margin-bottom: 1.75rem; font-size: 0.92rem; }
+
+        footer {
+            background: var(--surface); border-top: 1px solid var(--border-soft);
+            text-align: center; padding: 1.75rem; color: var(--muted); font-size: 0.85rem;
+            position: relative; z-index: 1;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+
+        #scrollTopBtn {
+            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border: none; cursor: pointer;
+            width: 50px; height: 50px; border-radius: 50%; font-size: 20px;
+            box-shadow: 0 10px 30px -6px rgba(99, 102, 241, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #scrollTopBtn:hover { transform: translateY(-4px); box-shadow: 0 16px 36px -8px rgba(99, 102, 241, 0.7); }
+
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(40px) scale(0.98); 
+            filter: blur(6px);
+            transition: 
+                opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.9s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            filter: blur(0); 
+        }
+        
+        .mobile-telegram-btn {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #229ED9, #0088cc);
+            color: #fff;
+            font-size: 26px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px -6px rgba(34, 158, 217, 0.6);
+            z-index: 98;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        .mobile-telegram-btn:hover { transform: scale(1.08); }
+
+        .stats { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+        .stat { 
+            padding: 1.5rem 2rem; border-radius: var(--radius); text-align: center; min-width: 140px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+            transition: transform 0.3s ease;
+        }
+        .stat:hover { transform: translateY(-4px); }
+        .stat-icon { font-size: 1.75rem; margin-bottom: 8px; display: inline-block; transition: transform 0.3s ease; }
+        .stat:hover .stat-icon { transform: scale(1.2) rotate(-10deg); }
+        .stat strong {
+            display: block; font-size: 2rem; color: var(--primary);
+            letter-spacing: -0.03em; font-variant-numeric: tabular-nums; transition: color 0.3s ease;
+        }
+        .stat span { color: var(--muted); font-size: 0.9rem; }
+        .stat .counter { display: inline-block; min-width: 2ch; }
+        .stat .counter.done { animation: counterPop 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes counterPop {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.15); color: var(--accent); }
+            100% { transform: scale(1); }
+        }
+
+        .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+        .case { 
+            padding: 1.75rem; border-radius: var(--radius); border: 1px solid var(--border-soft);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+        }
+        .case h3 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--text); font-weight: 700; }
+        .case p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+            }
+            .feature.js-reveal, .reveal { opacity: 1; transform: none; filter: none; }
+            .hero::before, .section-title::before, .custom-glow { animation: none !important; }
+        }
+
+        .cursor-glow {
+            position: fixed; top: 0; left: 0; width: 420px; height: 420px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.18), transparent 65%);
+            pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
+            will-change: transform; opacity: 0; transition: opacity 0.4s ease;
+            mix-blend-mode: multiply;
+        }
+        body:not(.dark) .cursor-glow.is-active { opacity: 1; }
+        html.dark .cursor-glow { background: radial-gradient(circle, rgba(129, 140, 248, 0.25), transparent 65%); mix-blend-mode: screen; }
+        html.dark .cursor-glow.is-active { opacity: 1; }
+        @media (pointer: coarse) { .cursor-glow { display: none !important; } }
+        @media (prefers-reduced-motion: reduce) { .cursor-glow { display: none !important; } }
+
+        .steps {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px; position: relative; margin-top: 1rem;
+        }
+        @media (min-width: 900px) {
+            .steps::before {
+                content: ''; position: absolute; top: 24px; left: 12%; right: 12%;
+                height: 2px;
+                background: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.2) 15%, rgba(99, 102, 241, 0.4) 50%, rgba(99, 102, 241, 0.2) 85%, transparent 100%);
+                z-index: 0;
+            }
+        }
+        .step {
+            padding: 32px 24px 28px; border-radius: var(--radius);
+            border: 1px solid var(--border-soft); text-align: center;
+            position: relative; z-index: 1;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+        }
+        .step:hover { transform: translateY(-8px); box-shadow: 0 24px 50px -12px rgba(99, 102, 241, 0.22); border-color: rgba(99, 102, 241, 0.35); }
+        .step-num {
+            width: 52px; height: 52px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; font-weight: 800; font-size: 1.25rem;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px;
+            box-shadow: 0 10px 24px -6px rgba(99, 102, 241, 0.55);
+            position: relative; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .step:hover .step-num { transform: scale(1.1) rotate(-6deg); }
+        .step-num::after {
+            content: ''; position: absolute; inset: -6px; border-radius: 50%;
+            border: 2px solid rgba(99, 102, 241, 0.25);
+            animation: stepPulse 2.6s ease-out infinite;
+        }
+        @keyframes stepPulse {
+            0%   { transform: scale(0.95); opacity: 0.8; }
+            100% { transform: scale(1.35); opacity: 0; }
+        }
+        .step h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); font-weight: 700; letter-spacing: -0.015em; }
+        .step p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+        /* ===== ПОРТФОЛИО ===== */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .portfolio-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid var(--card-border);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+            display: block;
+        }
+        .portfolio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px -15px rgba(99, 102, 241, 0.25);
+        }
+        .portfolio-preview {
+            height: 200px;
+            background: linear-gradient(135deg, #eef2ff 0%, #fce7f3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        html.dark .portfolio-preview {
+            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+        }
+        .portfolio-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .portfolio-card:hover .portfolio-preview::after {
+            transform: translateX(100%);
+        }
+        .portfolio-mockup {
+            font-size: 4.5rem;
+            filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.35));
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .portfolio-card:hover .portfolio-mockup {
+            transform: scale(1.15) rotate(-5deg);
+        }
+        .portfolio-info { padding: 20px 24px 24px; }
+        .portfolio-tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .portfolio-info h3 {
+            font-size: 1.05rem;
+            color: var(--text);
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+        }
+        .portfolio-info > p {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+        .portfolio-metrics {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            font-weight: 600;
+        }
+        .portfolio-metrics span {
+            background: var(--surface-2);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* ===== ГАРАНТИИ ===== */
+        .guarantee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+        .guarantee {
+            padding: 32px 28px; border-radius: var(--radius);
+            border: 1px solid var(--border-soft); text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 8px 24px -8px rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 var(--card-inset);
+        }
+        .guarantee:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        .guarantee-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .guarantee:hover .guarantee-icon {
+            transform: scale(1.15) rotate(-8deg);
+        }
+        .guarantee h3 {
+            font-size: 1.05rem;
+            color: var(--text);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+        }
+        .guarantee p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        /* ===== НЕ НАШЛИ ЗАПРОС? ===== */
+        .custom-inner {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            padding: 56px 40px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 30px 60px -15px rgba(30, 27, 75, 0.5);
+        }
+        .custom-glow {
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.4), transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(236, 72, 153, 0.3), transparent 50%);
+            pointer-events: none;
+            animation: customGlow 8s ease-in-out infinite alternate;
+        }
+        @keyframes customGlow {
+            from { transform: translate(0, 0); }
+            to   { transform: translate(20px, -20px); }
+        }
+        .custom-inner h2 {
+            position: relative;
+            font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+        }
+        .custom-inner p {
+            position: relative;
+            font-size: 1.02rem;
+            color: #cbd5e1;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .custom-btn {
+            position: relative;
+            padding: 14px 32px;
+            font-size: 1rem;
+            box-shadow: 0 15px 40px -8px rgba(99, 102, 241, 0.7);
+        }
+
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--text); color: var(--bg);
+            padding: 14px 24px 14px 20px;
+            border-radius: 14px; font-size: 0.9rem; font-weight: 500; line-height: 1.4;
+            box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.5);
+            z-index: 1000; display: flex; align-items: center; gap: 12px;
+            max-width: calc(100vw - 40px); width: max-content;
+            opacity: 0; pointer-events: none;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast-icon { font-size: 1.15rem; flex-shrink: 0; animation: toastFly 1.6s ease-in-out infinite; }
+        @keyframes toastFly {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            50%      { transform: translateX(4px) rotate(6deg); }
+        }
+        .toast-text { flex: 1; }
+        .toast::after {
+            content: ''; position: absolute; left: 0; bottom: 0;
+            height: 2px; width: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 0 0 14px 14px; transform-origin: left;
+            transform: scaleX(1); animation: toastProgress 2.8s linear forwards;
+        }
+        .toast:not(.show)::after { animation: none; transform: scaleX(0); }
+        @keyframes toastProgress {
+            from { transform: scaleX(1); }
+            to   { transform: scaleX(0); }
+        }
+        html.dark .toast { background: #f1f5f9; color: #0f172a; box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6); }
+
+        /* ============ ЧАТ-ВИДЖЕТ ============ */
+        .chat-widget { position: fixed; bottom: 30px; left: 30px; z-index: 99; }
+        .chat-toggle {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; border: none; font-size: 26px; cursor: pointer;
+            box-shadow: 0 10px 30px -6px rgba(99, 102, 241, 0.6);
+            transition: transform 0.3s ease;
+            animation: chatPulse 2.5s ease-in-out infinite;
+        }
+        @keyframes chatPulse {
+            0%, 100% { box-shadow: 0 10px 30px -6px rgba(99, 102, 241, 0.6); }
+            50%      { box-shadow: 0 10px 40px -4px rgba(99, 102, 241, 0.9); }
+        }
+        .chat-toggle:hover { transform: scale(1.1) rotate(-10deg); }
+        .chat-panel {
+            position: absolute; bottom: 75px; left: 0; width: 300px;
+            background: var(--surface); border-radius: 20px;
+            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.3);
+            overflow: hidden;
+            transform: scale(0.8) translateY(20px);
+            transform-origin: bottom left; opacity: 0; pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--border-soft);
+        }
+        .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+        }
+        .chat-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .chat-header strong { display: block; font-size: 0.95rem; }
+        .chat-header span { font-size: 0.75rem; color: #d1fae5; }
+        .chat-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg {
+            background: var(--surface-2); padding: 10px 14px;
+            border-radius: 12px 12px 12px 4px; font-size: 0.88rem;
+            color: var(--text); margin-bottom: 6px;
+        }
+        .chat-option {
+            padding: 10px 14px; border-radius: 10px;
+            background: var(--surface-2); color: var(--text-soft);
+            text-decoration: none; font-size: 0.88rem; font-weight: 500;
+            transition: all 0.2s ease; border: 1px solid transparent;
+        }
+        .chat-option:hover {
+            background: rgba(99, 102, 241, 0.1); color: var(--primary);
+            border-color: rgba(99, 102, 241, 0.2); transform: translateX(3px);
+        }
+        .chat-option-accent {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; margin-top: 4px;
+        }
+        .chat-option-accent:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; }
+        html.dark .chat-panel { background: var(--surface); border-color: var(--border); }
+        html.dark .chat-msg { background: var(--surface-2); }
+        html.dark .chat-option { background: var(--surface-2); color: var(--text-soft); }
+        html.dark .chat-option:hover { background: rgba(129, 140, 248, 0.15); color: var(--primary-light); }
+
+        /* ============================================================
+           МОБИЛЬНЫЕ СТИЛИ
+           ============================================================ */
+        @media (max-width: 640px) {
+            header {
+                padding: 0.75rem 0.9rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            .logo { font-size: 1.1rem; }
+            #themeToggle { width: 36px; height: 36px; font-size: 0.95rem; margin-left: auto; }
+            nav {
+                flex-basis: 100%;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+                gap: 0.15rem;
+                margin-top: 0.25rem;
+                padding-bottom: 4px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            nav::-webkit-scrollbar { display: none; }
+            nav a { padding: 0.4rem 0.7rem; font-size: 0.82rem; flex-shrink: 0; }
+
+            html.dark .portfolio-card { background: rgba(30, 41, 59, 0.85); border-color: rgba(148, 163, 184, 0.2); }
+            .portfolio-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px) saturate(150%); }
+
+            .feature { padding: 1.15rem 1.1rem; }
+            .feature-icon { width: 36px; height: 36px; font-size: 1rem; border-radius: 10px; margin-bottom: 0.75rem; }
+            .feature h3 { font-size: 0.95rem; }
+            .feature p { font-size: 0.82rem; }
+
+            .stat { padding: 1.1rem 1.25rem; min-width: 110px; }
+            .stat-icon { font-size: 1.35rem; margin-bottom: 6px; }
+            .stat strong { font-size: 1.6rem; }
+            .stat span { font-size: 0.82rem; }
+
+            .guarantee { padding: 24px 20px; }
+            .guarantee-icon { font-size: 1.9rem; margin-bottom: 12px; }
+            .guarantee h3 { font-size: 0.98rem; }
+            .guarantee p { font-size: 0.85rem; }
+
+            .portfolio-preview { height: 150px; position: relative; }
+            .portfolio-preview::after { pointer-events: none; z-index: 1; }
+            .portfolio-mockup { font-size: 3rem; }
+            .portfolio-info { padding: 16px 18px 18px; }
+            .portfolio-tag { font-size: 0.66rem; padding: 3px 10px; margin-bottom: 8px; }
+            .portfolio-info h3 { font-size: 0.98rem; }
+            .portfolio-info > p { font-size: 0.84rem; margin-bottom: 12px; }
+            .portfolio-metrics { font-size: 0.74rem; gap: 8px; }
+            .portfolio-metrics span { padding: 3px 8px; background: rgba(255,255,255,0.05); }
+
+            .steps { grid-template-columns: 1fr; gap: 16px; }
+            .step { padding: 20px 18px; gap: 14px; text-align: left; display: flex; align-items: flex-start; }
+            .step-num { margin: 0; flex-shrink: 0; width: 40px; height: 40px; font-size: 0.98rem; }
+            .step h3 { margin-top: 4px; font-size: 0.98rem; margin-bottom: 6px; }
+            .step p { font-size: 0.84rem; }
+            .step-num::after { display: none; }
+
+            .status-badge { font-size: 0.72rem; padding: 7px 12px; gap: 6px; top: 110px; }
+            .status-dot { width: 7px; height: 7px; }
+
+            .btn { padding: 0.8rem 1.35rem; font-size: 0.88rem; }
+            .cta-group { gap: 0.6rem; }
+
+            .section-title { font-size: 1.6rem; }
+            .section-subtitle { font-size: 0.95rem; margin-bottom: 2rem; }
+
+            .price-card { padding: 24px 20px; }
+            .price-card h3 { font-size: 1.05rem; }
+            .price-card .price { font-size: 1.55rem; }
+            .price-card ul { font-size: 0.85rem; line-height: 1.9; }
+            
+            .price-card.featured::after {
+                top: 10px;
+                right: 10px;
+                font-size: 0.7rem;
+                padding: 3px 10px;
+            }
+
+            .faq-item { padding: 18px 20px; }
+            .faq-item summary { font-size: 0.98rem; }
+            .faq-item p { font-size: 0.88rem; }
+
+            .form-card { padding: 26px 22px; }
+            .form-card h3 { font-size: 1.25rem; }
+            .form-card .sub { font-size: 0.85rem; margin-bottom: 1.25rem; }
+
+            .chat-widget { bottom: 20px; left: 20px; z-index: 100; }
+            .chat-toggle { width: 48px; height: 48px; font-size: 20px; }
+            .chat-panel { position: fixed; left: 12px; right: 12px; bottom: 84px; width: auto; max-width: none; z-index: 101; }
+            .mobile-telegram-btn { display: flex; width: 48px; height: 48px; font-size: 22px; bottom: 82px; }
+            #scrollTopBtn { width: 40px; height: 40px; font-size: 16px; bottom: 16px; right: 16px; }
+
+            .custom-inner { padding: 32px 20px; }
+            .custom-inner h2 { font-size: 1.4rem; }
+            .custom-inner p { font-size: 0.92rem; margin-bottom: 20px; }
+            .custom-btn { padding: 12px 24px; font-size: 0.92rem; }
+
+            .case { padding: 1.25rem 1.1rem; }
+            .case h3 { font-size: 0.95rem; }
+            .case p { font-size: 0.84rem; }
+
+            .section { padding: 48px 14px; }
+            .features { margin-top: 2.5rem; }
+            main { padding: 2rem 1rem 3rem; }
+            .feature::before, .price-card::before, .step::before, .guarantee::before { display: none; }
+            .hero::before { width: 100%; height: 300px; }
+            body::before { background-size: 40px 40px; }
+            .toast { bottom: 160px; font-size: 0.85rem; padding: 12px 18px 12px 16px; }
+        }
+
+        @media (max-width: 380px) {
+            .feature-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+            .stat-icon { font-size: 1.2rem; }
+            .guarantee-icon { font-size: 1.7rem; }
+            .portfolio-mockup { font-size: 2.6rem; }
+            .step-num { width: 36px; height: 36px; font-size: 0.9rem; }
+            .btn { padding: 0.75rem 1.15rem; font-size: 0.85rem; }
+            .section-title { font-size: 1.4rem; }
+            .hero h1 { font-size: 1.9rem; }
+            .logo { font-size: 1rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .toast, .toast-icon, .toast::after { animation: none !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Разработка сайтов и автоматизация на Python">
+    <meta property="og:description" content="Сайты, Telegram-боты, парсинг, автоматизация для малого бизнеса. Быстро, с гарантией.">
+    <meta property="og:url" content="https://jaaabo.netlify.app/">
+    <meta property="og:image" content="https://jaaabo.netlify.app/preview.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://jaaabo.netlify.app/preview.jpg">
+</head>
+<body id="top">
+    <div class="bg-decoration" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <header>
+        <a href="#top" class="logo">Jaaabo.dev</a>
+        <nav aria-label="Основная навигация">
+            <a href="#top">Главная</a>
+            <a href="#about">Обо мне</a>
+            <a href="#portfolio">Работы</a>
+            <a href="#process">Процесс</a>
+            <a href="#prices">Цены</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <button id="themeToggle" aria-label="Переключить тему" title="Сменить тему">🌙</button>
+    </header>
+
+    <a href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener noreferrer" class="status-badge" id="statusBadge">
+        <span class="status-dot"></span>
+        <span>Свободен для проектов</span>
+    </a>
+
+    <main>
+        <div class="hero">
+            <div class="badge" role="status">
+                <span class="dot" aria-hidden="true"></span>
+                <span>Свободен для новых проектов</span>
+            </div>
+            <h1>Разработка сайтов и автоматизация <span class="gradient">бизнеса на Python.</span></h1>
+            <p>Помогаю бизнесу экономить время: создаю удобные сайты, пишу скрипты для парсинга и настраиваю автоматические рассылки.</p>
+            <div class="cta-group">
+                <a href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    Обсудить проект
+                </a>
+                <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" title="Написать в MAX" aria-label="Написать в MAX">
+                    Написать в MAX
+                </a>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon" aria-hidden="true">⚡</div>
+                    <h3>Сайты под ключ</h3>
+                    <p>Лендинги, визитки, на Flask/FastAPI</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon" aria-hidden="true">🎨</div>
+                    <h3>Автоматизация</h3>
+                    <p>Напишу бота для MAX, настрою парсинг данных</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon" aria-hidden="true">🔧</div>
+                    <h3>Правки и доработки</h3>
+                    <p>Починю ваш текущий сайт или добавлю новый функционал</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="section section-alt reveal" id="about">
+        <div class="section-inner">
+            <h2 class="section-title">Цифры и кейсы</h2>
+            <p class="section-subtitle">Немного фактов обо мне</p>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-icon">🚀</div>
+                    <strong><span class="counter" data-target="3" data-suffix="+">0</span></strong>
+                    <span>проектов</span>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">⏳</div>
+                    <strong><span class="counter" data-target="1" data-suffix=" года">0</span></strong>
+                    <span>опыта</span>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">🛡️</div>
+                    <strong><span class="counter" data-target="14" data-suffix=" дней">0</span></strong>
+                    <span>гарантии</span>
+                </div>
+            </div>
+
+            <div class="cases">
+                <div class="case">
+                    <h3>Бот для записи клиентов</h3>
+                    <p>Салон красоты: MAX-бот вместо администратора. −6 часов рутины в неделю.</p>
+                </div>
+                <div class="case">
+                    <h3>Парсер цен</h3>
+                    <p>Магазин: ежедневный сбор цен конкурентов в таблицу. Экономия 2 часа в день.</p>
+                </div>
+                <div class="case">
+                    <h3>Лендинг для мастера</h3>
+                    <p>Страница с формой заявок в Telegram. +40% обращений за месяц.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section reveal" id="portfolio">
+        <div class="section-inner">
+            <h2 class="section-title">Примеры работ</h2>
+            <p class="section-subtitle">Реальные проекты с измеримым результатом</p>
+
+            <div class="portfolio-grid">
+                <a href="" class="portfolio-card" target="_blank" rel="noopener noreferrer">
+                    <div class="portfolio-preview">
+                        <div class="portfolio-mockup">🌐</div>
+                    </div>
+                    <div class="portfolio-info">
+                        <span class="portfolio-tag">Лендинг</span>
+                        <h3>Сайт для мастера маникюра</h3>
+                        <p>+40% заявок за первый месяц</p>
+                        <div class="portfolio-metrics">
+                            <span>⚡ 5 дней</span>
+                            <span>📈 +40%</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="" class="portfolio-card" target="_blank" rel="noopener noreferrer">
+                    <div class="portfolio-preview">
+                        <div class="portfolio-mockup">🤖</div>
+                    </div>
+                    <div class="portfolio-info">
+                        <span class="portfolio-tag">MAX-бот</span>
+                        <h3>Бот записи для салона красоты</h3>
+                        <p>−6 часов рутины в неделю</p>
+                        <div class="portfolio-metrics">
+                            <span>⚡ 3 дня</span>
+                            <span>⏱ −6ч/нед</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="" class="portfolio-card" target="_blank" rel="noopener noreferrer">
+                    <div class="portfolio-preview">
+                        <div class="portfolio-mockup">📊</div>
+                    </div>
+                    <div class="portfolio-info">
+                        <span class="portfolio-tag">Парсер</span>
+                        <h3>Сбор цен конкурентов</h3>
+                        <p>2 часа экономии в день</p>
+                        <div class="portfolio-metrics">
+                            <span>⚡ 2 дня</span>
+                            <span>⏱ −2ч/день</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt reveal" id="process">
+        <div class="section-inner">
+            <h2 class="section-title">Как проходит работа</h2>
+            <p class="section-subtitle">Прозрачный процесс без сюрпризов — от заявки до гарантии</p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <h3>Заявка</h3>
+                    <p>Пишете в Telegram или MAX, описываете задачу. Я задаю уточняющие вопросы.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <h3>Смета</h3>
+                    <p>Присылаю план работ, точные сроки и фиксированную стоимость. Без «сюрпризов» в процессе.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <h3>Разработка</h3>
+                    <p>Показываю промежуточные результаты. Вы вносите правки — я оперативно дорабатываю.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <h3>Гарантия</h3>
+                    <p>После сдачи — 14 дней бесплатных доработок. Если что-то пойдёт не так — исправлю.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section reveal" id="guarantees">
+        <div class="section-inner">
+            <h2 class="section-title">Мои гарантии</h2>
+            <p class="section-subtitle">Чтобы вам было спокойно</p>
+
+            <div class="guarantee-grid">
+                <div class="guarantee">
+                    <div class="guarantee-icon">🛡️</div>
+                    <h3>14 дней на правки</h3>
+                    <p>Любые ошибки по моей вине исправлю бесплатно в течение 2 недель после сдачи.</p>
+                </div>
+                <div class="guarantee">
+                    <div class="guarantee-icon">📄</div>
+                    <h3>Работа по договору</h3>
+                    <p>Фиксируем объём, сроки и стоимость в документе. Без «сюрпризов» в процессе.</p>
+                </div>
+                <div class="guarantee">
+                    <div class="guarantee-icon">💳</div>
+                    <h3>Оплата по этапам</h3>
+                    <p>50% предоплата, 50% после сдачи. Вы платите за результат, а не за обещания.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="prices" class="section section-alt reveal">
+        <div class="section-inner">
+            <h2 class="section-title">Стоимость услуг</h2>
+            <p class="section-subtitle">Выберите нужную услугу, чтобы обсудить детали и оплатить</p>
+
+            <div class="price-grid">
+                <div class="price-card">
+                    <h3>Лендинг под ключ</h3>
+                    <p class="desc">Одностраничный сайт с формой связи</p>
+                    <div class="price"><span>от 4 000 ₽</span></div>
+                    <ul>
+                        <li>Адаптивный дизайн</li>
+                        <li>Настройка формы заявок</li>
+                        <li>Подключение к Telegram</li>
+                    </ul>
+                    <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: auto; width: 100%;">
+                        Обсудить проект
+                    </a>
+                </div>
+
+                <div class="price-card featured">
+                    <h3>Автоматизация</h3>
+                    <p class="desc">Парсинг, боты, скрипты</p>
+                    <div class="price"><span>от 2 000 ₽</span></div>
+                    <ul>
+                        <li>Сбор данных с сайтов</li>
+                        <li>Telegram-боты</li>
+                        <li>Авторассылки</li>
+                    </ul>
+                    <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: auto; width: 100%;">
+                        Обсудить проект
+                    </a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Доработка сайта</h3>
+                    <p class="desc">Правки, починка, новый функционал</p>
+                    <div class="price"><span>от 2 000 ₽</span></div>
+                    <ul>
+                        <li>Исправление ошибок</li>
+                        <li>Добавление блоков</li>
+                        <li>Ускорение загрузки</li>
+                    </ul>
+                    <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: auto; width: 100%;">
+                        Обсудить проект
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="section reveal">
+        <div class="section-inner">
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <p class="section-subtitle">Ответы на то, что обычно спрашивают перед началом работы</p>
+
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>Как проходит оплата?</summary>
+                    <p>Работа начинается с предоплаты 50%. Оставшаяся часть вносится после того, как вы проверите результат и подтвердите, что всё работает. Я всегда на связи и готов показать промежуточные результаты.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Сколько времени занимает разработка?</summary>
+                    <p>В зависимости от сложности задачи, сроки варьируются от 3 до 14 дней. Точный срок я называю после обсуждения деталей. Если задача срочная — сообщите об этом сразу, постараемся найти решение.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Что нужно для начала работы?</summary>
+                    <p>Всё, что от вас нужно — это описание задачи и примеры (если есть). Например, ссылки на сайты, которые вам нравятся, или примерное описание функционала. Я задам уточняющие вопросы и предложу оптимальное решение.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Даете ли вы гарантию?</summary>
+                    <p>Да, я предоставляю гарантию 14 дней на все работы. Если в этот период обнаружатся ошибки по моей вине или что-то пойдет не так — я исправлю это бесплатно и в кратчайшие сроки.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section class="section reveal" id="custom">
+        <div class="custom-inner">
+            <div class="custom-glow" aria-hidden="true"></div>
+            <h2>Не нашли свой запрос?</h2>
+            <p>Опишите задачу — предложу решение и назову стоимость. Бесплатно и без обязательств.</p>
+            <a href="https://max.ru/u/f9LHodD0cOIF_-jEc0BYp3WGWdwVbbKlQYZsNKLMISwkptB3NId9WvjQ_sM" target="_blank" rel="noopener noreferrer" class="btn btn-primary custom-btn">
+                💬 Обсудить задачу
+            </a>
+        </div>
+    </section>
+
+    <section id="contact-form" class="section section-alt reveal">
+        <div class="form-card">
+            <h3>Или напишите напрямую</h3>
+            <p class="sub">Выберите удобный мессенджер, я отвечу в течение дня</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <a href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;">
+                    ✈️ Написать в Telegram
+                </a>
+                <a href="https://max.ru/u/f9LHodD0cOK2IHhmzxICqiZKUWYRTzjzJVoUicIbj9fr5bVuWosBfMMGP-o" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; padding: 1rem; font-size: 1rem; border-color: var(--primary); color: var(--primary);" title="Написать в MAX" aria-label="Написать в MAX">
+                    💬 Написать в MAX
+                </a>
+            </div>
+            
+            <p style="text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 1.5rem;">
+                Отвечаю быстро. Обычно в течение 15-30 минут.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 · Парсинг, Лендинг, Автоматизация · 
+        <a href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer">Telegram</a>
+    </footer>
+
+    <button id="scrollTopBtn" title="Наверх" aria-label="Вернуться наверх">↑</button>
+    <a href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer" class="mobile-telegram-btn" aria-label="Написать в Telegram">✈️</a>
+
+    <div class="chat-widget">
+        <button class="chat-toggle" id="chatToggle" aria-label="Быстрый вопрос">💬</button>
+        <div class="chat-panel" id="chatPanel">
+            <div class="chat-header">
+                <div class="chat-avatar">👨‍💻</div>
+                <div>
+                    <strong>Jaaabo</strong>
+                    <span>● онлайн</span>
+                </div>
+            </div>
+            <div class="chat-body">
+                <p class="chat-msg">Привет! Что вас интересует?</p>
+                <a href="https://t.me/Jaaabo?text=Привет!%20Интересует%20лендинг" class="chat-option">🌐 Лендинг</a>
+                <a href="https://t.me/Jaaabo?text=Привет!%20Интересует%20парсинг" class="chat-option">🤖 Парсинг / бот</a>
+                <a href="https://t.me/Jaaabo?text=Привет!%20Интересует%20доработка" class="chat-option">🔧 Доработка сайта</a>
+                <a href="https://t.me/Jaaabo" class="chat-option chat-option-accent">✈️ Написать напрямую</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var root = document.documentElement;
+            var themeToggle = document.getElementById('themeToggle');
+            if (!themeToggle) return;
+            if (root.classList.contains('dark')) themeToggle.textContent = '☀️';
+            themeToggle.addEventListener('click', function () {
+                var isDark = root.classList.toggle('dark');
+                themeToggle.textContent = isDark ? '☀️' : '🌙';
+                try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+            });
+        })();
+
+        (function () {
+            const features = document.querySelectorAll('.feature');
+            if (!('IntersectionObserver' in window)) {
+                features.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            features.forEach(el => {
+                el.classList.add('js-reveal');
+                observer.observe(el);
+            });
+        })();
+
+        (function () {
+            const reveals = document.querySelectorAll('.reveal');
+            if (!('IntersectionObserver' in window)) {
+                reveals.forEach(el => el.classList.add('active'));
+                return;
+            }
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(el => observer.observe(el));
+        })();
+
+        (function () {
+            const btn = document.getElementById('scrollTopBtn');
+            if (!btn) return;
+            window.addEventListener('scroll', () => {
+                btn.style.display = window.scrollY > 400 ? 'block' : 'none';
+            }, { passive: true });
+            btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        })();
+
+        (function () {
+            var finePointer = window.matchMedia('(pointer: fine)').matches;
+            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!finePointer || reducedMotion) return;
+            var glow = document.querySelector('.cursor-glow');
+            if (!glow) return;
+            var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+            var cx = mx, cy = my, rafId = null, isMoving = false;
+            function tick() {
+                cx += (mx - cx) * 0.12;
+                cy += (my - cy) * 0.12;
+                glow.style.transform = 'translate(' + (cx - glow.offsetWidth / 2) + 'px, ' + (cy - glow.offsetHeight / 2) + 'px)';
+                rafId = requestAnimationFrame(tick);
+            }
+            document.addEventListener('mousemove', function (e) {
+                mx = e.clientX; my = e.clientY;
+                if (!isMoving) {
+                    isMoving = true;
+                    glow.classList.add('is-active');
+                    if (!rafId) rafId = requestAnimationFrame(tick);
+                }
+            }, { passive: true });
+            document.addEventListener('mouseleave', () => glow.classList.remove('is-active'));
+            document.addEventListener('mouseenter', () => { if (isMoving) glow.classList.add('is-active'); });
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
+                else if (isMoving) { rafId = requestAnimationFrame(tick); }
+            });
+        })();
+
+        (function () {
+            var counters = document.querySelectorAll('.counter');
+            if (!counters.length) return;
+            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reducedMotion) {
+                counters.forEach(function (el) {
+                    el.textContent = el.dataset.target + (el.dataset.suffix || '');
+                });
+                return;
+            }
+            function animate(el) {
+                var target = parseInt(el.dataset.target, 10) || 0;
+                var suffix = el.dataset.suffix || '';
+                var duration = 1600, start = null, done = false;
+                function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+                function step(ts) {
+                    if (start === null) start = ts;
+                    var progress = Math.min((ts - start) / duration, 1);
+                    el.textContent = Math.floor(easeOutExpo(progress) * target) + suffix;
+                    if (progress < 1) requestAnimationFrame(step);
+                    else if (!done) { done = true; el.textContent = target + suffix; el.classList.add('done'); }
+                }
+                requestAnimationFrame(step);
+            }
+            if (!('IntersectionObserver' in window)) { counters.forEach(animate); return; }
+            var obs = new IntersectionObserver(function (entries, o) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { animate(e.target); o.unobserve(e.target); }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(function (el) { obs.observe(el); });
+        })();
+
+        (function () {
+            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reducedMotion) return;
+            var toastEl = null, toastTimer = null;
+            function ensureToast() {
+                if (toastEl) return toastEl;
+                toastEl = document.createElement('div');
+                toastEl.className = 'toast';
+                toastEl.setAttribute('role', 'status');
+                toastEl.setAttribute('aria-live', 'polite');
+                toastEl.innerHTML = '<span class="toast-icon" aria-hidden="true">✈️</span><span class="toast-text">Открываю Telegram…</span>';
+                document.body.appendChild(toastEl);
+                return toastEl;
+            }
+            function showToast(message) {
+                var el = ensureToast();
+                el.querySelector('.toast-text').textContent = message;
+                el.classList.remove('show');
+                void el.offsetWidth;
+                el.classList.add('show');
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2800);
+            }
+            var links = document.querySelectorAll('a[href*="t.me"], a[href*="max.ru"]');
+            links.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                    var text = (link.textContent || '').toLowerCase();
+                    var msg = 'Открываю Telegram… Отвечу в течение 15-30 минут';
+                    if (link.href.indexOf('max.ru') !== -1 || text.indexOf('max') !== -1) {
+                        msg = 'Открываю MAX… Отвечу в течение 15-30 минут';
+                    } else if (link.href.indexOf('text=') !== -1) {
+                        msg = 'Открываю чат с выбранной услугой…';
+                    }
+                    showToast(msg);
+                });
+            });
+        })();
+
+        (function () {
+            'use strict';
+            var toggle = document.getElementById('chatToggle');
+            var panel  = document.getElementById('chatPanel');
+            if (!toggle || !panel) return;
+
+            function close() { panel.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+            function open()  { panel.classList.add('open');    toggle.setAttribute('aria-expanded', 'true'); }
+            function isOpen(){ return panel.classList.contains('open'); }
+
+            toggle.setAttribute('aria-controls', 'chatPanel');
+            toggle.setAttribute('aria-expanded', 'false');
+
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                isOpen() ? close() : open();
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!isOpen()) return;
+                if (!panel.contains(e.target) && !toggle.contains(e.target)) close();
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && isOpen()) close();
+            });
+
+            panel.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () { setTimeout(close, 200); });
+            });
+        })();
+
+        (function () {
+            var header = document.querySelector('header');
+            if (!header) return;
+            window.addEventListener('scroll', function () {
+                header.classList.toggle('scrolled', window.scrollY > 20);
+            }, { passive: true });
+        })();
+
+        (function () {
+            var badge = document.getElementById('statusBadge');
+            if (!badge) return;
+            var shown = false;
+            window.addEventListener('scroll', function () {
+                var shouldShow = window.scrollY > 500;
+                if (shouldShow !== shown) {
+                    shown = shouldShow;
+                    badge.classList.toggle('show', shown);
+                }
+            }, { passive: true });
+        })();
+    </script>
+</body>
+</html>
