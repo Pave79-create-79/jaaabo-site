@@ -1,1733 +1,644 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Автоматизирую рутину для малого бизнеса: боты, парсинг, интеграции</title>
-    <meta name="description" content="Разработка сайтов на Python, автоматизация бизнеса, парсинг данных, Telegram-боты. Быстро, качественно, с гарантией.">
-    <meta name="keywords" content="разработка сайтов, Python, автоматизация, парсинг, Telegram-боты">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
+  <title>Разработка сайтов и автоматизация малого бизнеса | Jaaabo</title>
+  <meta name="description" content="Разработка лендингов от 4 000 ₽, Telegram-ботов и автоматизации от 2 000 ₽. Примеры работ, калькулятор стоимости, 14 дней гарантии. Jaaabo.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://jaaabo.ru/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Jaaabo — разработка сайтов и автоматизация для бизнеса">
+  <meta property="og:description" content="Лендинги, Telegram-боты и автоматизация под вашу задачу. Посмотрите проекты и рассчитайте предварительную стоимость.">
+  <meta property="og:url" content="https://jaaabo.ru/">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Jaaabo">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Jaaabo — сайты и автоматизация бизнеса">
+  <meta name="twitter:description" content="Разработка лендингов, ботов и автоматизации. Портфолио и калькулятор стоимости.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <script>
-        (function () {
-            try {
-                var saved = localStorage.getItem('theme');
-                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (saved === 'dark' || (!saved && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                }
-            } catch (e) {}
-        })();
-    </script>
+  <!-- Яндекс Метрика: основной код счётчика -->
+  <script>
+    (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j=0;j<document.scripts.length;j++) {
+        if (document.scripts[j].src===r) return;
+      }
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],
+      k.async=1,k.src=r,a.parentNode.insertBefore(k,a);
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=114655793', 'ym');
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    ym(114655793, 'init', {
+      webvisor:true,
+      clickmap:true,
+      trackLinks:true,
+      accurateTrackBounce:true
+    });
+  </script>
 
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #818cf8;
-            --accent: #ec4899;
-            --accent-2: #f59e0b;
-            --bg: #fafafa;
-            --surface: #ffffff;
-            --surface-2: #f8fafc;
-            --text: #0f172a;
-            --text-soft: #334155;
-            --muted: #64748b;
-            --border: #e5e7eb;
-            --border-soft: #f1f5f9;
-            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-            --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
-            --shadow-lg: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
-            --radius: 16px;
-            --radius-sm: 12px;
-            --radius-lg: 24px;
-            --card-bg: rgba(255, 255, 255, 0.65);
-            --card-border: rgba(255, 255, 255, 0.6);
-            --card-inset: rgba(255, 255, 255, 0.8);
-        }
-
-        html.dark {
-            --bg: #0b1120;
-            --surface: #111827;
-            --surface-2: #1e293b;
-            --text: #f1f5f9;
-            --text-soft: #cbd5e1;
-            --muted: #94a3b8;
-            --border: #334155;
-            --border-soft: #1e293b;
-            --card-bg: rgba(30, 41, 59, 0.6);
-            --card-border: rgba(148, 163, 184, 0.15);
-            --card-inset: rgba(255, 255, 255, 0.05);
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(at 20% 10%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 5%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
-                radial-gradient(at 95% 60%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
-                radial-gradient(at 5% 70%, rgba(96, 165, 250, 0.12) 0px, transparent 50%);
-            background-attachment: fixed;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        html.dark body {
-            background-image: 
-                radial-gradient(at 20% 10%, rgba(99, 102, 241, 0.25) 0px, transparent 50%),
-                radial-gradient(at 80% 5%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
-                radial-gradient(at 95% 60%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
-                radial-gradient(at 5% 70%, rgba(96, 165, 250, 0.18) 0px, transparent 50%);
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-        }
-
-        html.dark body::before {
-            background-image:
-                linear-gradient(rgba(241, 245, 249, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(241, 245, 249, 0.04) 1px, transparent 1px);
-        }
-
-        .bg-decoration {
-            position: fixed; inset: 0;
-            pointer-events: none; z-index: 0; overflow: hidden;
-        }
-        .bg-decoration::before, .bg-decoration::after {
-            content: ''; position: absolute; border-radius: 50%;
-            filter: blur(120px); opacity: 0.35;
-            animation: float 24s ease-in-out infinite; will-change: transform;
-        }
-        .bg-decoration::before {
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, #a78bfa, transparent 70%);
-            top: -280px; right: -160px;
-        }
-        .bg-decoration::after {
-            width: 520px; height: 520px;
-            background: radial-gradient(circle, #60a5fa, transparent 70%);
-            bottom: -220px; left: -180px; animation-delay: -12s;
-        }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50%      { transform: translate(60px, -40px) scale(1.08); }
-        }
-
-        /* ===== ИНТЕРЬЕР: Шум ===== */
-        .bg-decoration::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35' /%3E%3C/svg%3E");
-            opacity: 0.04;
-            mix-blend-mode: overlay;
-            pointer-events: none;
-        }
-
-        /* ===== ПАРЯЩИЙ HEADER ===== */
-        header {
-            background: rgba(255, 255, 255, 0.7);
-            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-            padding: 0.9rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.03),
-                0 8px 24px -12px rgba(15, 23, 42, 0.06);
-            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        header.scrolled {
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.05),
-                0 12px 32px -12px rgba(15, 23, 42, 0.15);
-        }
-        html.dark header {
-            background: rgba(15, 23, 42, 0.75);
-            border-bottom-color: rgba(51, 65, 85, 0.4);
-        }
-        html.dark header.scrolled {
-            background: rgba(15, 23, 42, 0.9);
-        }
-
-        .logo {
-            font-size: 1.25rem; font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; letter-spacing: -0.03em; white-space: nowrap; cursor: pointer;
-            text-decoration: none; flex-shrink: 0;
-        }
-
-        nav { display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: flex-end; }
-        nav a {
-            text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 500;
-            padding: 0.55rem 0.95rem; border-radius: 10px;
-            transition: color 0.2s ease, background 0.2s ease; white-space: nowrap;
-        }
-        nav a:hover { color: var(--primary); background: rgba(99, 102, 241, 0.08); }
-        nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-
-        #themeToggle {
-            background: transparent;
-            border: 1px solid var(--border);
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
-            flex-shrink: 0;
-            color: var(--text);
-        }
-        #themeToggle:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.08);
-            transform: rotate(20deg);
-        }
-        #themeToggle:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* ===== СТАТУС-БЕЙДЖ ===== */
-        .status-badge {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--surface);
-            color: var(--text);
-            padding: 10px 18px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-size: 0.82rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.25);
-            border: 1px solid var(--border-soft);
-            z-index: 95;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-        }
-        .status-badge.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        .status-badge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 36px -10px rgba(99, 102, 241, 0.35);
-            border-color: var(--primary);
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-            animation: statusPulse 2s infinite;
-            flex-shrink: 0;
-        }
-        @keyframes statusPulse {
-            0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
-            70%  { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-
-        main {
-            flex: 1; display: flex; align-items: center; justify-content: center;
-            padding: 3rem 2rem 4rem; position: relative; z-index: 1;
-        }
-        .hero {
-            text-align: center; max-width: 760px; width: 100%;
-            animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
-            position: relative;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 400px;
-            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.15), transparent 65%);
-            filter: blur(60px);
-            z-index: -1;
-            pointer-events: none;
-            animation: heroGlow 6s ease-in-out infinite alternate;
-        }
-        @keyframes heroGlow {
-            from { transform: translateX(-50%) scale(1); opacity: 0.8; }
-            to   { transform: translateX(-50%) scale(1.1); opacity: 1; }
-        }
-        html.dark .hero::before {
-            background: radial-gradient(ellipse, rgba(129, 140, 248, 0.3), transparent 65%);
-        }
-        @keyframes fadeInUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .hero h1 {
-            font-size: clamp(2.25rem, 5.5vw, 4rem);
-            margin-bottom: 1.25rem; color: var(--text);
-            letter-spacing: -0.045em; line-height: 1.08; font-weight: 800;
-            text-shadow: 0 2px 20px rgba(15, 23, 42, 0.05);
-        }
-        html.dark .hero h1 { text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); }
-        .hero h1 .gradient {
-            background: linear-gradient(120deg, var(--primary) 0%, var(--accent) 50%, var(--accent-2) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .hero p {
-            font-size: 1.15rem; color: var(--muted); margin-bottom: 2.25rem;
-            max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.7;
-        }
-        .cta-group { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
-
-        .btn {
-            padding: 0.9rem 1.75rem; border-radius: 12px; font-size: 0.95rem; font-weight: 600;
-            cursor: pointer; border: none; font-family: inherit;
-            display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 3px; }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white; box-shadow: 0 8px 24px -6px rgba(99, 102, 241, 0.5);
-        }
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.7s ease;
-        }
-        .btn-primary:hover::before { left: 100%; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -8px rgba(99, 102, 241, 0.65); }
-        .btn-secondary {
-            background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-        }
-        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-
-        .features {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.25rem; margin-top: 4.5rem; max-width: 760px; width: 100%;
-        }
-        .feature {
-            padding: 1.6rem 1.4rem; border-radius: var(--radius); text-align: left;
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.6s ease-out;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-            position: relative;
-            overflow: hidden;
-        }
-        .feature::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 40%);
-            opacity: 0;
-            transition: opacity 0.5s ease, transform 0.8s ease;
-            transform: scale(0.5);
-            pointer-events: none;
-        }
-        .feature:hover::before {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .feature:hover { transform: translateY(-6px); border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.2); }
-        .feature.js-reveal { opacity: 0; transform: translateY(24px); }
-        .feature.js-reveal.is-visible { opacity: 1; transform: translateY(0); }
-        .feature-icon {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.25rem; margin-bottom: 1rem;
-            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.5);
-            position: relative;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .feature:hover .feature-icon {
-            transform: translateY(-4px) rotate(-6deg) scale(1.05);
-        }
-        .feature-icon::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 12px;
-            background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%);
-            pointer-events: none;
-        }
-        .feature h3 { font-size: 1rem; margin-bottom: 0.4rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
-        .feature p { font-size: 0.85rem; color: var(--muted); line-height: 1.55; }
-
-        .section { padding: 80px 20px; position: relative; z-index: 1; }
-        .section-alt { background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%); }
-        .section-inner { max-width: 1100px; margin: 0 auto; }
-        .section-title {
-            text-align: center; font-size: clamp(1.75rem, 3.5vw, 2.25rem);
-            margin-bottom: 0.75rem; color: var(--text); font-weight: 800; letter-spacing: -0.035em; line-height: 1.2;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        .section-title::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 280px;
-            height: 80px;
-            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.15), transparent 70%);
-            filter: blur(30px);
-            z-index: -1;
-            pointer-events: none;
-        }
-        html.dark .section-title::before {
-            background: radial-gradient(ellipse, rgba(129, 140, 248, 0.25), transparent 70%);
-        }
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 999px;
-            margin: 16px auto 0;
-            box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
-        }
-        .section-subtitle {
-            text-align: center; color: var(--muted); margin-bottom: 3rem;
-            font-size: 1.05rem; max-width: 560px; margin-left: auto; margin-right: auto;
-        }
-
-        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: stretch; }
-        .price-card {
-            padding: 32px; border-radius: var(--radius);
-            border: 2px solid transparent;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
-            display: flex; flex-direction: column;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .price-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 40%);
-            opacity: 0;
-            transition: opacity 0.5s ease, transform 0.8s ease;
-            transform: scale(0.5);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .price-card:hover::before {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-        
-        .price-card.featured {
-            border-color: var(--primary);
-            box-shadow: 0 20px 50px -12px rgba(99, 102, 241, 0.25);
-        }
-
-        /* Возвращаем бейдж "Хит" для карточки цен */
-        .price-card.featured::after {
-            content: 'Хит';
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: #fff;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 999px;
-            box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.5);
-            z-index: 2;
-            pointer-events: none;
-        }
-        
-        .price-card h3 { font-size: 1.15rem; color: var(--text); margin-bottom: 0.4rem; font-weight: 700; letter-spacing: -0.02em; position: relative; z-index: 1; }
-        .price-card .desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.4rem; position: relative; z-index: 1; }
-        .price-card .price { font-size: 1.9rem; font-weight: 800; color: var(--text); margin-bottom: 1.4rem; letter-spacing: -0.03em; position: relative; display: inline-block; z-index: 1; }
-        .price-card .price::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -4px;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 999px;
-            opacity: 0.15;
-            filter: blur(3px);
-        }
-        .price-card .price span {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .price-card ul { list-style: none; padding: 0; margin: 0 0 1.5rem; color: var(--text-soft); font-size: 0.9rem; line-height: 2; position: relative; z-index: 1; }
-        .price-card ul li::before { content: '✓'; color: var(--primary); font-weight: 700; margin-right: 0.5rem; }
-        
-        .price-card .btn { position: relative; z-index: 1; }
-
-        .faq-list { display: flex; flex-direction: column; gap: 14px; max-width: 800px; margin: 0 auto; }
-        .faq-item {
-            padding: 24px 28px; border-radius: var(--radius-sm);
-            border: 1px solid var(--border-soft); transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-        }
-        .faq-item:hover { border-color: rgba(99, 102, 241, 0.3); box-shadow: var(--shadow-md); }
-        .faq-item summary {
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: var(--text);
-            list-style: none;
-        }
-        .faq-item summary::-webkit-details-marker { display: none; }
-        .faq-item summary::after {
-            content: '+';
-            float: right;
-            color: var(--primary);
-            font-weight: 800;
-        }
-        .faq-item[open] summary::after { content: '−'; }
-        .faq-item[open] summary { margin-bottom: 0.65rem; }
-        .faq-item p { color: var(--text-soft); line-height: 1.7; font-size: 0.95rem; }
-
-        .form-card {
-            max-width: 520px; margin: 0 auto; padding: 36px;
-            background: var(--surface); border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg); border: 1px solid var(--border-soft);
-        }
-        .form-card h3 { color: var(--text); text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 800; letter-spacing: -0.03em; }
-        .form-card .sub { text-align: center; color: var(--muted); margin-bottom: 1.75rem; font-size: 0.92rem; }
-
-        footer {
-            background: var(--surface); border-top: 1px solid var(--border-soft);
-            text-align: center; padding: 1.75rem; color: var(--muted); font-size: 0.85rem;
-            position: relative; z-index: 1;
-        }
-        footer a { color: var(--primary); text-decoration: none; }
-
-        #scrollTopBtn {
-            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; border: none; cursor: pointer;
-            width: 50px; height: 50px; border-radius: 50%; font-size: 20px;
-            box-shadow: 0 10px 30px -6px rgba(99, 102, 241, 0.5);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #scrollTopBtn:hover { transform: translateY(-4px); box-shadow: 0 16px 36px -8px rgba(99, 102, 241, 0.7); }
-
-        .reveal { 
-            opacity: 0; 
-            transform: translateY(40px) scale(0.98); 
-            filter: blur(6px);
-            transition: 
-                opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                filter 0.9s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
-        .reveal.active { 
-            opacity: 1; 
-            transform: translateY(0) scale(1); 
-            filter: blur(0); 
-        }
-        
-        .mobile-telegram-btn {
-            display: none;
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 56px; height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #229ED9, #0088cc);
-            color: #fff;
-            font-size: 26px;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 30px -6px rgba(34, 158, 217, 0.6);
-            z-index: 98;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-        .mobile-telegram-btn:hover { transform: scale(1.08); }
-
-        .stats { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
-        .stat { 
-            padding: 1.5rem 2rem; border-radius: var(--radius); text-align: center; min-width: 140px;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-            transition: transform 0.3s ease;
-        }
-        .stat:hover { transform: translateY(-4px); }
-        .stat-icon { font-size: 1.75rem; margin-bottom: 8px; display: inline-block; transition: transform 0.3s ease; }
-        .stat:hover .stat-icon { transform: scale(1.2) rotate(-10deg); }
-        .stat strong {
-            display: block; font-size: 2rem; color: var(--primary);
-            letter-spacing: -0.03em; font-variant-numeric: tabular-nums; transition: color 0.3s ease;
-        }
-        .stat span { color: var(--muted); font-size: 0.9rem; }
-        .stat .counter { display: inline-block; min-width: 2ch; }
-        .stat .counter.done { animation: counterPop 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes counterPop {
-            0%   { transform: scale(1); }
-            50%  { transform: scale(1.15); color: var(--accent); }
-            100% { transform: scale(1); }
-        }
-
-        .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
-        .case { 
-            padding: 1.75rem; border-radius: var(--radius); border: 1px solid var(--border-soft);
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-        }
-        .case h3 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--text); font-weight: 700; }
-        .case p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important; scroll-behavior: auto !important;
-            }
-            .feature.js-reveal, .reveal { opacity: 1; transform: none; filter: none; }
-            .hero::before, .section-title::before, .custom-glow { animation: none !important; }
-        }
-
-        .cursor-glow {
-            position: fixed; top: 0; left: 0; width: 420px; height: 420px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.18), transparent 65%);
-            pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
-            will-change: transform; opacity: 0; transition: opacity 0.4s ease;
-            mix-blend-mode: multiply;
-        }
-        body:not(.dark) .cursor-glow.is-active { opacity: 1; }
-        html.dark .cursor-glow { background: radial-gradient(circle, rgba(129, 140, 248, 0.25), transparent 65%); mix-blend-mode: screen; }
-        html.dark .cursor-glow.is-active { opacity: 1; }
-        @media (pointer: coarse) { .cursor-glow { display: none !important; } }
-        @media (prefers-reduced-motion: reduce) { .cursor-glow { display: none !important; } }
-
-        .steps {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px; position: relative; margin-top: 1rem;
-        }
-        @media (min-width: 900px) {
-            .steps::before {
-                content: ''; position: absolute; top: 24px; left: 12%; right: 12%;
-                height: 2px;
-                background: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.2) 15%, rgba(99, 102, 241, 0.4) 50%, rgba(99, 102, 241, 0.2) 85%, transparent 100%);
-                z-index: 0;
-            }
-        }
-        .step {
-            padding: 32px 24px 28px; border-radius: var(--radius);
-            border: 1px solid var(--border-soft); text-align: center;
-            position: relative; z-index: 1;
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-        }
-        .step:hover { transform: translateY(-8px); box-shadow: 0 24px 50px -12px rgba(99, 102, 241, 0.22); border-color: rgba(99, 102, 241, 0.35); }
-        .step-num {
-            width: 52px; height: 52px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white; font-weight: 800; font-size: 1.25rem;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 18px;
-            box-shadow: 0 10px 24px -6px rgba(99, 102, 241, 0.55);
-            position: relative; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .step:hover .step-num { transform: scale(1.1) rotate(-6deg); }
-        .step-num::after {
-            content: ''; position: absolute; inset: -6px; border-radius: 50%;
-            border: 2px solid rgba(99, 102, 241, 0.25);
-            animation: stepPulse 2.6s ease-out infinite;
-        }
-        @keyframes stepPulse {
-            0%   { transform: scale(0.95); opacity: 0.8; }
-            100% { transform: scale(1.35); opacity: 0; }
-        }
-        .step h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); font-weight: 700; letter-spacing: -0.015em; }
-        .step p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
-
-        /* ===== ПОРТФОЛИО ===== */
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-        .portfolio-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: var(--radius);
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            border: 1px solid var(--card-border);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
-            display: block;
-        }
-        .portfolio-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 60px -15px rgba(99, 102, 241, 0.25);
-        }
-        .portfolio-preview {
-            height: 200px;
-            background: linear-gradient(135deg, #eef2ff 0%, #fce7f3 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        html.dark .portfolio-preview {
-            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
-        }
-        .portfolio-preview::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .portfolio-card:hover .portfolio-preview::after {
-            transform: translateX(100%);
-        }
-        .portfolio-mockup {
-            font-size: 4.5rem;
-            filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.35));
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .portfolio-card:hover .portfolio-mockup {
-            transform: scale(1.15) rotate(-5deg);
-        }
-        .portfolio-info { padding: 20px 24px 24px; }
-        .portfolio-tag {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-        .portfolio-info h3 {
-            font-size: 1.05rem;
-            color: var(--text);
-            margin-bottom: 6px;
-            font-weight: 700;
-            letter-spacing: -0.015em;
-        }
-        .portfolio-info > p {
-            font-size: 0.88rem;
-            color: var(--muted);
-            margin-bottom: 14px;
-        }
-        .portfolio-metrics {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            font-size: 0.8rem;
-            color: var(--text-soft);
-            font-weight: 600;
-        }
-        .portfolio-metrics span {
-            background: var(--surface-2);
-            padding: 4px 10px;
-            border-radius: 8px;
-        }
-
-        /* ===== ГАРАНТИИ ===== */
-        .guarantee-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-        }
-        .guarantee {
-            padding: 32px 28px; border-radius: var(--radius);
-            border: 1px solid var(--border-soft); text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: 
-                0 1px 2px rgba(15, 23, 42, 0.04),
-                0 8px 24px -8px rgba(15, 23, 42, 0.08),
-                inset 0 1px 0 var(--card-inset);
-        }
-        .guarantee:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.2);
-            border-color: rgba(99, 102, 241, 0.3);
-        }
-        .guarantee-icon {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        .guarantee:hover .guarantee-icon {
-            transform: scale(1.15) rotate(-8deg);
-        }
-        .guarantee h3 {
-            font-size: 1.05rem;
-            color: var(--text);
-            margin-bottom: 10px;
-            font-weight: 700;
-            letter-spacing: -0.015em;
-        }
-        .guarantee p {
-            font-size: 0.9rem;
-            color: var(--muted);
-            line-height: 1.65;
-        }
-
-        /* ===== НЕ НАШЛИ ЗАПРОС? ===== */
-        .custom-inner {
-            position: relative;
-            max-width: 700px;
-            margin: 0 auto;
-            text-align: center;
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-            color: white;
-            padding: 56px 40px;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: 0 30px 60px -15px rgba(30, 27, 75, 0.5);
-        }
-        .custom-glow {
-            position: absolute;
-            inset: -50%;
-            background: radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.4), transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(236, 72, 153, 0.3), transparent 50%);
-            pointer-events: none;
-            animation: customGlow 8s ease-in-out infinite alternate;
-        }
-        @keyframes customGlow {
-            from { transform: translate(0, 0); }
-            to   { transform: translate(20px, -20px); }
-        }
-        .custom-inner h2 {
-            position: relative;
-            font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-            font-weight: 800;
-            margin-bottom: 12px;
-            letter-spacing: -0.03em;
-        }
-        .custom-inner p {
-            position: relative;
-            font-size: 1.02rem;
-            color: #cbd5e1;
-            line-height: 1.7;
-            margin-bottom: 28px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .custom-btn {
-            position: relative;
-            padding: 14px 32px;
-            font-size: 1rem;
-            box-shadow: 0 15px 40px -8px rgba(99, 102, 241, 0.7);
-        }
-
-        .toast {
-            position: fixed; bottom: 30px; left: 50%;
-            transform: translateX(-50%) translateY(120px);
-            background: var(--text); color: var(--bg);
-            padding: 14px 24px 14px 20px;
-            border-radius: 14px; font-size: 0.9rem; font-weight: 500; line-height: 1.4;
-            box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.5);
-            z-index: 1000; display: flex; align-items: center; gap: 12px;
-            max-width: calc(100vw - 40px); width: max-content;
-            opacity: 0; pointer-events: none;
-            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast-icon { font-size: 1.15rem; flex-shrink: 0; animation: toastFly 1.6s ease-in-out infinite; }
-        @keyframes toastFly {
-            0%, 100% { transform: translateX(0) rotate(0deg); }
-            50%      { transform: translateX(4px) rotate(6deg); }
-        }
-        .toast-text { flex: 1; }
-        .toast::after {
-            content: ''; position: absolute; left: 0; bottom: 0;
-            height: 2px; width: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 0 0 14px 14px; transform-origin: left;
-            transform: scaleX(1); animation: toastProgress 2.8s linear forwards;
-        }
-        .toast:not(.show)::after { animation: none; transform: scaleX(0); }
-        @keyframes toastProgress {
-            from { transform: scaleX(1); }
-            to   { transform: scaleX(0); }
-        }
-        html.dark .toast { background: #f1f5f9; color: #0f172a; box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6); }
-
-        /* ============ ЧАТ-ВИДЖЕТ ============ */
-        .chat-widget { position: fixed; bottom: 30px; left: 30px; z-index: 99; }
-        .chat-toggle {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white; border: none; font-size: 26px; cursor: pointer;
-            box-shadow: 0 10px 30px -6px rgba(99, 102, 241, 0.6);
-            transition: transform 0.3s ease;
-            animation: chatPulse 2.5s ease-in-out infinite;
-        }
-        @keyframes chatPulse {
-            0%, 100% { box-shadow: 0 10px 30px -6px rgba(99, 102, 241, 0.6); }
-            50%      { box-shadow: 0 10px 40px -4px rgba(99, 102, 241, 0.9); }
-        }
-        .chat-toggle:hover { transform: scale(1.1) rotate(-10deg); }
-        .chat-panel {
-            position: absolute; bottom: 75px; left: 0; width: 300px;
-            background: var(--surface); border-radius: 20px;
-            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.3);
-            overflow: hidden;
-            transform: scale(0.8) translateY(20px);
-            transform-origin: bottom left; opacity: 0; pointer-events: none;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid var(--border-soft);
-        }
-        .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
-        .chat-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px;
-        }
-        .chat-avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; flex-shrink: 0;
-        }
-        .chat-header strong { display: block; font-size: 0.95rem; }
-        .chat-header span { font-size: 0.75rem; color: #d1fae5; }
-        .chat-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg {
-            background: var(--surface-2); padding: 10px 14px;
-            border-radius: 12px 12px 12px 4px; font-size: 0.88rem;
-            color: var(--text); margin-bottom: 6px;
-        }
-        .chat-option {
-            padding: 10px 14px; border-radius: 10px;
-            background: var(--surface-2); color: var(--text-soft);
-            text-decoration: none; font-size: 0.88rem; font-weight: 500;
-            transition: all 0.2s ease; border: 1px solid transparent;
-        }
-        .chat-option:hover {
-            background: rgba(99, 102, 241, 0.1); color: var(--primary);
-            border-color: rgba(99, 102, 241, 0.2); transform: translateX(3px);
-        }
-        .chat-option-accent {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; margin-top: 4px;
-        }
-        .chat-option-accent:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; }
-        html.dark .chat-panel { background: var(--surface); border-color: var(--border); }
-        html.dark .chat-msg { background: var(--surface-2); }
-        html.dark .chat-option { background: var(--surface-2); color: var(--text-soft); }
-        html.dark .chat-option:hover { background: rgba(129, 140, 248, 0.15); color: var(--primary-light); }
-
-        /* ============================================================
-           МОБИЛЬНЫЕ СТИЛИ
-           ============================================================ */
-        @media (max-width: 640px) {
-            header {
-                padding: 0.75rem 0.9rem;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                align-items: center;
-            }
-            .logo { font-size: 1.1rem; }
-            #themeToggle { width: 36px; height: 36px; font-size: 0.95rem; margin-left: auto; }
-            nav {
-                flex-basis: 100%;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                justify-content: flex-start;
-                gap: 0.15rem;
-                margin-top: 0.25rem;
-                padding-bottom: 4px;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-            nav::-webkit-scrollbar { display: none; }
-            nav a { padding: 0.4rem 0.7rem; font-size: 0.82rem; flex-shrink: 0; }
-
-            html.dark .portfolio-card { background: rgba(30, 41, 59, 0.85); border-color: rgba(148, 163, 184, 0.2); }
-            .portfolio-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px) saturate(150%); }
-
-            .feature { padding: 1.15rem 1.1rem; }
-            .feature-icon { width: 36px; height: 36px; font-size: 1rem; border-radius: 10px; margin-bottom: 0.75rem; }
-            .feature h3 { font-size: 0.95rem; }
-            .feature p { font-size: 0.82rem; }
-
-            .stat { padding: 1.1rem 1.25rem; min-width: 110px; }
-            .stat-icon { font-size: 1.35rem; margin-bottom: 6px; }
-            .stat strong { font-size: 1.6rem; }
-            .stat span { font-size: 0.82rem; }
-
-            .guarantee { padding: 24px 20px; }
-            .guarantee-icon { font-size: 1.9rem; margin-bottom: 12px; }
-            .guarantee h3 { font-size: 0.98rem; }
-            .guarantee p { font-size: 0.85rem; }
-
-            .portfolio-preview { height: 150px; position: relative; }
-            .portfolio-preview::after { pointer-events: none; z-index: 1; }
-            .portfolio-mockup { font-size: 3rem; }
-            .portfolio-info { padding: 16px 18px 18px; }
-            .portfolio-tag { font-size: 0.66rem; padding: 3px 10px; margin-bottom: 8px; }
-            .portfolio-info h3 { font-size: 0.98rem; }
-            .portfolio-info > p { font-size: 0.84rem; margin-bottom: 12px; }
-            .portfolio-metrics { font-size: 0.74rem; gap: 8px; }
-            .portfolio-metrics span { padding: 3px 8px; background: rgba(255,255,255,0.05); }
-
-            .steps { grid-template-columns: 1fr; gap: 16px; }
-            .step { padding: 20px 18px; gap: 14px; text-align: left; display: flex; align-items: flex-start; }
-            .step-num { margin: 0; flex-shrink: 0; width: 40px; height: 40px; font-size: 0.98rem; }
-            .step h3 { margin-top: 4px; font-size: 0.98rem; margin-bottom: 6px; }
-            .step p { font-size: 0.84rem; }
-            .step-num::after { display: none; }
-
-            .status-badge { font-size: 0.72rem; padding: 7px 12px; gap: 6px; top: 110px; }
-            .status-dot { width: 7px; height: 7px; }
-
-            .btn { padding: 0.8rem 1.35rem; font-size: 0.88rem; }
-            .cta-group { gap: 0.6rem; }
-
-            .section-title { font-size: 1.6rem; }
-            .section-subtitle { font-size: 0.95rem; margin-bottom: 2rem; }
-
-            .price-card { padding: 24px 20px; }
-            .price-card h3 { font-size: 1.05rem; }
-            .price-card .price { font-size: 1.55rem; }
-            .price-card ul { font-size: 0.85rem; line-height: 1.9; }
-            
-            .price-card.featured::after {
-                top: 10px;
-                right: 10px;
-                font-size: 0.7rem;
-                padding: 3px 10px;
-            }
-
-            .faq-item { padding: 18px 20px; }
-            .faq-item summary { font-size: 0.98rem; }
-            .faq-item p { font-size: 0.88rem; }
-
-            .form-card { padding: 26px 22px; }
-            .form-card h3 { font-size: 1.25rem; }
-            .form-card .sub { font-size: 0.85rem; margin-bottom: 1.25rem; }
-
-            .chat-widget { bottom: 20px; left: 20px; z-index: 100; }
-            .chat-toggle { width: 48px; height: 48px; font-size: 20px; }
-            .chat-panel { position: fixed; left: 12px; right: 12px; bottom: 84px; width: auto; max-width: none; z-index: 101; }
-            .mobile-telegram-btn { display: flex; width: 48px; height: 48px; font-size: 22px; bottom: 82px; }
-            #scrollTopBtn { width: 40px; height: 40px; font-size: 16px; bottom: 16px; right: 16px; }
-
-            .custom-inner { padding: 32px 20px; }
-            .custom-inner h2 { font-size: 1.4rem; }
-            .custom-inner p { font-size: 0.92rem; margin-bottom: 20px; }
-            .custom-btn { padding: 12px 24px; font-size: 0.92rem; }
-
-            .case { padding: 1.25rem 1.1rem; }
-            .case h3 { font-size: 0.95rem; }
-            .case p { font-size: 0.84rem; }
-
-            .section { padding: 48px 14px; }
-            .features { margin-top: 2.5rem; }
-            main { padding: 2rem 1rem 3rem; }
-            .feature::before, .price-card::before, .step::before, .guarantee::before { display: none; }
-            .hero::before { width: 100%; height: 300px; }
-            body::before { background-size: 40px 40px; }
-            .toast { bottom: 160px; font-size: 0.85rem; padding: 12px 18px 12px 16px; }
-        }
-
-        @media (max-width: 380px) {
-            .feature-icon { width: 32px; height: 32px; font-size: 0.9rem; }
-            .stat-icon { font-size: 1.2rem; }
-            .guarantee-icon { font-size: 1.7rem; }
-            .portfolio-mockup { font-size: 2.6rem; }
-            .step-num { width: 36px; height: 36px; font-size: 0.9rem; }
-            .btn { padding: 0.75rem 1.15rem; font-size: 0.85rem; }
-            .section-title { font-size: 1.4rem; }
-            .hero h1 { font-size: 1.9rem; }
-            .logo { font-size: 1rem; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .toast, .toast-icon, .toast::after { animation: none !important; transition-duration: 0.01ms !important; }
-        }
-    </style>
-
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Разработка сайтов и автоматизация на Python">
-    <meta property="og:description" content="Сайты, Telegram-боты, парсинг, автоматизация для малого бизнеса. Быстро, с гарантией.">
-    <meta property="og:url" content="https://jaaabo.netlify.app/">
-    <meta property="og:image" content="https://jaaabo.netlify.app/preview.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://jaaabo.netlify.app/preview.jpg">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://jaaabo.ru/#website",
+      "url": "https://jaaabo.ru/",
+      "name": "Jaaabo",
+      "inLanguage": "ru"
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://jaaabo.ru/#provider",
+      "name": "Jaaabo",
+      "url": "https://jaaabo.ru/",
+      "sameAs": [
+        "https://t.me/Jaaabo"
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "Разработка сайтов и лендингов",
+      "provider": {
+        "@id": "https://jaaabo.ru/#provider"
+      },
+      "url": "https://jaaabo.ru/#prices",
+      "offers": {
+        "@type": "Offer",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": 4000,
+          "priceCurrency": "RUB"
+        }
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "Разработка ботов и автоматизация",
+      "provider": {
+        "@id": "https://jaaabo.ru/#provider"
+      },
+      "url": "https://jaaabo.ru/#prices",
+      "offers": {
+        "@type": "Offer",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": 2000,
+          "priceCurrency": "RUB"
+        }
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "Доработка проектов",
+      "provider": {
+        "@id": "https://jaaabo.ru/#provider"
+      },
+      "url": "https://jaaabo.ru/#prices",
+      "offers": {
+        "@type": "Offer",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "minPrice": 2000,
+          "priceCurrency": "RUB"
+        }
+      }
+    }
+  ]
+}
+  </script>
+  <style>
+    :root{
+      color-scheme:dark;--bg:#080909;--panel:#101212;--panel2:#151818;
+      --text:#f5f5f2;--muted:#a0a5a3;--line:rgba(255,255,255,.09);
+      --orange:#ff713d;--orange2:#ff9a64;--max:1160px;
+      --radius:22px;--shadow:0 24px 80px rgba(0,0,0,.42)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 50% -15%,rgba(255,113,61,.18),transparent 48%),radial-gradient(ellipse at 100% 55%,rgba(255,113,61,.055),transparent 35%)}
+    body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+    a{color:inherit;text-decoration:none}button,select,textarea{font:inherit}
+    .container{width:min(var(--max),calc(100% - 44px));margin-inline:auto}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(8,9,9,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .logo{font-size:25px;font-weight:900;letter-spacing:-1.5px}.logo span{color:var(--orange)}
+    .navlinks{display:flex;align-items:center;gap:25px;color:#c2c5c2;font-size:13px;font-weight:600}
+    .navlinks a:hover,.footer-links a:hover{color:var(--orange2)}
+    .nav-actions{display:flex;align-items:center;gap:10px}
+    .menu-toggle{display:none;border:1px solid var(--line);background:var(--panel);color:white;border-radius:12px;padding:9px 12px;cursor:pointer}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;border-radius:13px;font-size:14px;font-weight:750;border:1px solid transparent;transition:.2s;cursor:pointer}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{color:#fff;background:linear-gradient(135deg,var(--orange2),#ed5428);box-shadow:0 10px 32px rgba(255,104,55,.22)}
+    .btn-ghost{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.035);color:#f2f2ef}
+    .hero{padding:100px 0 75px}.hero-grid{display:grid;grid-template-columns:1.13fr .87fr;gap:60px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(255,113,61,.25);background:rgba(255,113,61,.07);color:#ffad89;border-radius:999px;padding:8px 13px;font-size:11px;font-weight:750;letter-spacing:1.2px;text-transform:uppercase}
+    .pulse{width:7px;height:7px;border-radius:50%;background:#65d89b;box-shadow:0 0 0 5px rgba(101,216,155,.12)}
+    h1{font-size:clamp(43px,6.2vw,76px);line-height:1.03;letter-spacing:-4px;margin:25px 0 22px;font-weight:850}
+    .gradient{background:linear-gradient(110deg,#ffc09f,#ff713d 48%,#ff9c65);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero-copy{max-width:610px;color:#b7bcba;font-size:17px;line-height:1.8;margin:0 0 30px}
+    .hero-buttons{display:flex;gap:12px;flex-wrap:wrap}.micro-note{color:#777f7b;font-size:12px;margin-top:17px}
+    .hero-visual{position:relative;min-height:420px;display:grid;place-items:center}
+    .orb{position:absolute;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(255,113,61,.22),rgba(255,113,61,.035) 52%,transparent 72%);filter:blur(8px)}
+    .dashboard{position:relative;width:min(100%,420px);padding:22px;border:1px solid rgba(255,255,255,.13);border-radius:25px;background:linear-gradient(145deg,rgba(27,31,30,.96),rgba(12,14,14,.94));box-shadow:var(--shadow);transform:rotate(2deg)}
+    .dash-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:16px}
+    .dash-brand{font-size:13px;font-weight:800}.dash-dots{display:flex;gap:5px}.dash-dots i{width:6px;height:6px;background:#555;border-radius:50%}
+    .dash-label{font-size:11px;color:#909895;margin:20px 0 7px}.dash-title{font-size:25px;font-weight:800;letter-spacing:-1px}.dash-title span{color:var(--orange)}
+    .dash-chart{height:120px;margin:22px 0 18px;position:relative;border-bottom:1px solid #333;background:repeating-linear-gradient(to bottom,transparent 0 29px,rgba(255,255,255,.06) 30px)}
+    .dash-chart svg{position:absolute;inset:0;width:100%;height:100%}
+    .dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dash-stat{padding:13px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:13px}
+    .dash-stat strong{display:block;font-size:19px}.dash-stat small{color:#8f9692;font-size:10px}
+    .float-tag{position:absolute;padding:12px 15px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:#171b1a;box-shadow:var(--shadow);font-size:12px;font-weight:700}
+    .float-tag.one{top:42px;right:-5px}.float-tag.two{bottom:44px;left:-18px}.float-tag b{color:var(--orange2)}
+    .stats{padding:20px 0 75px}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.025);overflow:hidden}
+    .stat{padding:26px;text-align:center}.stat+.stat{border-left:1px solid var(--line)}
+    .stat strong{display:block;font-size:32px;color:var(--orange2)}.stat span{font-size:12px;color:#9ba19e}
+    section.section{padding:82px 0}.section-head{max-width:690px;margin-bottom:35px}
+    .kicker{color:var(--orange2);font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}
+    h2{font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-2px;margin:12px 0 14px}
+    .section-lead{color:var(--muted);font-size:15px;max-width:650px;margin:0}
+    .features,.portfolio{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+    .card{background:linear-gradient(145deg,rgba(23,27,26,.92),rgba(14,16,16,.94));border:1px solid var(--line);border-radius:var(--radius);padding:25px;transition:.25s}
+    .card:hover{transform:translateY(-5px);border-color:rgba(255,113,61,.4);box-shadow:0 18px 50px rgba(0,0,0,.25)}
+    .iconbox{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;color:#ffb08d;background:rgba(255,113,61,.12);border:1px solid rgba(255,113,61,.2);font-size:20px;margin-bottom:20px}
+    .card h3{font-size:18px;margin:0 0 9px}.card p{font-size:13px;color:#9da4a0;margin:0;line-height:1.75}
+    .project{padding:0;overflow:hidden}.project-preview{height:190px;padding:19px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,rgba(255,113,61,.23),transparent 65%),linear-gradient(135deg,#1e1714,#111414);border-bottom:1px solid var(--line)}
+    .mock-window{width:100%;max-width:270px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:#111514;padding:12px;box-shadow:0 15px 35px rgba(0,0,0,.35)}
+    .mock-bar{display:flex;gap:4px;margin-bottom:12px}.mock-bar i{width:5px;height:5px;background:#555;border-radius:50%}
+    .mock-line{height:6px;border-radius:8px;background:#343b38;margin:8px 0}.mock-line.orange{background:linear-gradient(90deg,#ff713d,#8c3f27);width:65%}.mock-line.short{width:43%}
+    .mock-blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.mock-blocks i{height:34px;border-radius:5px;background:#202724;border:1px solid #303936}
+    .project-body{padding:22px}.tag{display:inline-block;font-size:10px;color:#ffad89;background:rgba(255,113,61,.1);border:1px solid rgba(255,113,61,.17);padding:5px 9px;border-radius:999px;margin-bottom:12px;font-weight:700}
+    .project h3{font-size:17px;margin:0 0 8px}.project p{font-size:12px;color:#9da4a0;margin:0;line-height:1.75}.project-result{margin-top:14px;color:#ffb18f;font-size:12px;font-weight:750}
+    .process{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.step-num{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#ff9664,#e94f20);font-weight:850;font-size:13px;margin-bottom:18px}
+    .guarantee-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.guarantee-card{display:flex;gap:17px;align-items:flex-start}.check{color:#ff9a70;font-size:20px;font-weight:900}
+    .prices{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;align-items:stretch}.price-card{position:relative}
+    .price-card.featured{border-color:rgba(255,113,61,.5);box-shadow:0 15px 50px rgba(255,113,61,.08)}
+    .popular{position:absolute;right:17px;top:17px;font-size:9px;text-transform:uppercase;color:#ffb08d;background:rgba(255,113,61,.12);padding:6px 8px;border-radius:99px}
+    .price-title{color:#aab0ad;font-size:12px;font-weight:700}.price{font-size:35px;font-weight:850;margin:10px 0}.price-desc{font-size:12px;color:#9da4a0;min-height:40px}
+    .price-list{list-style:none;padding:0;margin:20px 0 23px;color:#c5cbc7;font-size:12px}.price-list li{margin:10px 0}.price-list li:before{content:"✓";color:var(--orange2);margin-right:9px}.price-card .btn{width:100%}
+    .faq{display:grid;grid-template-columns:1fr 1fr;gap:12px}details{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:15px;padding:18px 20px}
+    summary{cursor:pointer;font-size:13px;font-weight:700;list-style:none;padding-right:20px;position:relative}summary::-webkit-details-marker{display:none}
+    summary:after{content:"+";position:absolute;right:0;top:-3px;color:var(--orange2);font-size:21px}details[open] summary:after{content:"−"}
+    details p{color:#9da4a0;font-size:12px;line-height:1.8;margin:13px 0 0}
+    .cta,.lead-section{position:relative;overflow:hidden;border:1px solid rgba(255,113,61,.24);border-radius:28px;padding:48px;background:radial-gradient(ellipse at 85% 15%,rgba(255,113,61,.2),transparent 42%),linear-gradient(135deg,#1a1513,#111414)}
+    .cta h2{max-width:690px}.cta p,.lead-section p{max-width:600px;color:#aeb5b1;font-size:14px;margin-bottom:25px}
+    .lead-section{margin:40px auto 70px;text-align:center}.lead-section p{margin:0 auto 25px}.lead-label{color:#ffad89;font-size:11px;font-weight:800;letter-spacing:1.8px}
+    .lead-section h2 span{display:block;color:var(--orange2)}.lead-section small{display:block;margin-top:18px;color:#777}
+    footer{padding:32px 0;border-top:1px solid var(--line);color:#828985;font-size:11px}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}.footer-links{display:flex;gap:17px;flex-wrap:wrap}
+    .chat-toggle{position:fixed;right:22px;bottom:22px;z-index:30;width:58px;height:58px;border:0;border-radius:19px;background:linear-gradient(135deg,#ff9664,#ed5428);color:white;font-size:22px;box-shadow:0 12px 32px rgba(255,100,50,.35);cursor:pointer}
+    .chat-panel{position:fixed;right:22px;bottom:92px;width:min(320px,calc(100vw - 44px));z-index:30;padding:18px;background:#151918;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);display:none}
+    .chat-panel.open{display:block;animation:pop .2s ease}.chat-panel h3{margin:0 0 5px;font-size:16px}.chat-panel p{font-size:12px;color:#9da4a0;margin:0 0 14px}
+    .chat-option{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-top:8px;font-size:12px;font-weight:700}.chat-option:hover{border-color:rgba(255,113,61,.55);color:#ffad89}
+    .to-top{position:fixed;left:22px;bottom:22px;width:42px;height:42px;border-radius:13px;background:#171b1a;color:white;border:1px solid var(--line);cursor:pointer;display:none;z-index:15}.to-top.show{display:block}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}.reveal.visible{opacity:1;transform:none}
+    @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+    /* Калькулятор */
+    .jj-calculator{padding:80px 20px;background:#101010;color:#fff}
+    .jj-calc-inner{max-width:850px;margin:0 auto}
+    .jj-calc-heading{text-align:center;margin-bottom:35px}
+    .jj-calc-label{color:#ff9a64;font-size:12px;font-weight:700;letter-spacing:2px}
+    .jj-calc-heading p{color:#aaa}
+    .jj-calc-card{background:#191919;border:1px solid #303030;border-radius:20px;padding:30px}
+    .jj-calc-card>label{display:block;margin:22px 0 10px;font-weight:600}
+    .jj-calc-card select,.jj-calc-card textarea{display:block;width:100%;padding:15px;border:1px solid #383838;border-radius:10px;background:#101010;color:#fff;font:inherit;outline:none}
+    .jj-calc-card select:focus,.jj-calc-card textarea:focus{border-color:#ff7a18}
+    .jj-calc-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .jj-calc-options label{display:flex;align-items:center;gap:9px;padding:13px;background:#222;border:1px solid #333;border-radius:9px;color:#ddd;cursor:pointer}
+    .jj-calc-options input{accent-color:#ff7a18}
+    .jj-calc-result{margin-top:28px;padding:22px;background:#24201c;border:1px solid #51351f;border-radius:12px}
+    .jj-calc-result span,.jj-calc-result small{display:block;color:#aaa}
+    .jj-calc-result strong{display:block;margin:10px 0;color:#ff8a32;font-size:32px}
+    .jj-calc-result small{line-height:1.5}
+    .jj-calc-button{width:100%;margin-top:20px;padding:17px;border:0;border-radius:10px;background:#ff7a18;color:#111;font-size:16px;font-weight:700;cursor:pointer;transition:.2s}
+    .jj-calc-button:hover{background:#ff963f;transform:translateY(-2px)}
+    .jj-calc-status{min-height:22px;color:#ff963f;text-align:center}
+    .jj-calc-links{display:flex;justify-content:center;flex-wrap:wrap;gap:22px;margin-top:15px}
+    .jj-calc-links a{color:#ff963f}.jj-calc-links a:hover{text-decoration:underline}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:20px}.hero{padding-top:75px}.hero-visual{min-height:360px}.features,.portfolio,.prices{grid-template-columns:repeat(2,1fr)}.process{grid-template-columns:repeat(2,1fr)}.navlinks{gap:13px}.navlinks a{font-size:11px}}
+    @media(max-width:650px){
+      .container{width:min(100% - 32px,var(--max))}.nav{height:66px}
+      .navlinks{display:none;position:absolute;left:16px;right:16px;top:66px;padding:15px;background:#111514;border:1px solid var(--line);border-radius:16px;flex-direction:column;align-items:stretch;gap:0}
+      .navlinks.open{display:flex}.navlinks a{padding:11px 8px;font-size:13px}.nav-actions>.btn{display:none}.menu-toggle{display:block}
+      .hero{padding:64px 0 45px}h1{font-size:46px;letter-spacing:-2.7px}.hero-copy{font-size:14px}.hero-buttons .btn{width:100%}
+      .hero-visual{min-height:310px}.dashboard{transform:none;padding:17px}.orb{width:260px;height:260px}
+      .float-tag.one{right:0;top:12px}.float-tag.two{left:0;bottom:10px}
+      .stats{padding-bottom:42px}.stats-grid{grid-template-columns:1fr}.stat{padding:17px}.stat+.stat{border-left:0;border-top:1px solid var(--line)}
+      section.section{padding:58px 0}.features,.portfolio,.prices,.process,.guarantee-grid,.faq{grid-template-columns:1fr}
+      .card{padding:21px}.project-preview{height:165px}.price-desc{min-height:0}
+      .cta{padding:29px 22px}.footer-inner{align-items:flex-start;flex-direction:column}
+      .chat-toggle{right:16px;bottom:16px}.chat-panel{right:16px;bottom:84px}.to-top{left:16px;bottom:22px}
+      .jj-calculator{padding:60px 15px}.jj-calc-card{padding:20px}.jj-calc-options{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+    /* Коммерческий кейс: Хинкальная №1 */
+    .project-featured{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;border-color:rgba(255,113,61,.35);background:linear-gradient(135deg,#211815,#111414 65%)}
+    .project-featured .project-body{padding:clamp(24px,4vw,44px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+    .project-featured h3{font-size:clamp(27px,4vw,39px);letter-spacing:-1.2px;line-height:1.15;margin:12px 0}
+    .project-featured p{font-size:14px;max-width:450px;line-height:1.8}
+    .project-featured .tag{margin:0;font-size:11px}
+    .case-label{color:#b6b8b3;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:12px}
+    .case-deliverables{display:flex;flex-wrap:wrap;gap:8px;margin:19px 0 23px}
+    .case-deliverables span{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:8px;padding:6px 10px;font-size:12px;color:#e4dfd9}
+    .project-featured .btn{align-self:flex-start}
+    .restaurant-preview{min-height:315px;padding:28px;position:relative;display:grid;place-items:center;overflow:hidden;border-right:1px solid var(--line);background:radial-gradient(ellipse at 45% 40%,#67351f 0%,#302018 45%,#151311 80%)}
+    .restaurant-window{width:min(100%,390px);border:1px solid #8d644c;border-radius:15px;background:#1e1714;box-shadow:0 24px 50px #0007;overflow:hidden;transform:rotate(-2deg)}
+    .restaurant-bar{display:flex;align-items:center;gap:5px;padding:12px 15px;border-bottom:1px solid #ffffff15;color:#b9a391;font-size:9px;letter-spacing:1px}
+    .restaurant-bar i{width:6px;height:6px;border-radius:50%;background:#9d7058}.restaurant-bar span{margin-left:auto}
+    .restaurant-screen{min-height:210px;padding:25px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at center,#4c2c1d,#211714 75%);color:#f3dfb8}
+    .restaurant-screen svg{width:76px;height:76px;margin-bottom:8px;color:#e4b577}
+    .restaurant-screen strong{font-family:Georgia,serif;font-size:clamp(23px,3vw,34px);line-height:1.1;font-weight:600}
+    .restaurant-screen small{font-size:10px;letter-spacing:2px;margin-top:12px;color:#d3aa83;text-transform:uppercase}
+    .preview-note{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:10px;color:#c2a995;letter-spacing:.3px}
+    @media(max-width:650px){.project-featured{grid-template-columns:1fr;padding:0}.restaurant-preview{min-height:275px;padding:20px;border-right:0;border-bottom:1px solid var(--line)}.restaurant-screen{min-height:185px}.project-featured .btn{width:100%}.project:not(.project-featured){padding:0}}
+    /* Дополнительные улучшения адаптации и доступности */
+    .hero h1{font-size:clamp(38px,4.7vw,66px);letter-spacing:-.045em;overflow-wrap:anywhere}
+    .hero-grid>*{min-width:0}.navlinks{gap:17px}.navlinks a{white-space:nowrap}
+    .solution-link{display:inline-flex;align-items:center;min-height:44px;margin-top:13px;color:var(--orange2);font-size:13px;font-weight:700}
+    .lead-section{width:min(var(--max),calc(100% - 44px))}
+    .jj-calc-card select,.jj-calc-card textarea{font-size:16px}.jj-calc-options label{min-height:48px}.jj-calc-options input{flex-shrink:0;width:18px;height:18px}
+    .jj-calc-links a{display:inline-flex;align-items:center;min-height:44px}
+    a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid #ffb18f;outline-offset:4px}
+    .reveal{opacity:1;transform:none}.motion-enabled .reveal:not(.visible){opacity:0;transform:translateY(18px)}
+    .skip-link{position:absolute;left:12px;top:-100px;z-index:100;background:#fff;color:#111;padding:12px;border-radius:8px}.skip-link:focus{top:12px}
+    @media(max-width:1050px){.navlinks{gap:11px}.nav-actions>.btn{padding:12px}.nav{gap:12px}}
+    @media(max-width:820px){.navlinks{display:none;position:absolute;left:16px;right:16px;top:76px;padding:15px;background:#111514;border:1px solid var(--line);border-radius:16px;flex-direction:column;align-items:stretch;gap:0}.navlinks.open{display:flex}.navlinks a{padding:12px 8px;font-size:14px}.menu-toggle{display:block;min-width:44px;min-height:44px}.nav-actions>.btn{display:none}}
+    @media(max-width:650px){.navlinks{top:66px}.hero h1{font-size:clamp(34px,8.8vw,48px);letter-spacing:-.045em}.hero-visual{min-height:290px}.hero-copy{font-size:15px}.float-tag{font-size:10px;padding:8px 10px}.lead-section{width:calc(100% - 32px);padding:30px 20px}.jj-calc-card{padding:16px}.jj-calc-card select{padding:12px 8px}.jj-calc-result strong{font-size:28px}.footer-inner{padding-bottom:55px}.chat-toggle{width:52px;height:52px}.restaurant-window{transform:none}}
+    @media(prefers-reduced-motion:reduce){.motion-enabled .reveal:not(.visible){opacity:1;transform:none}}
+  .demo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.demo-grid .btn{margin-top:18px}.demo-art{display:grid;align-content:center;gap:8px;min-height:150px;padding:20px;margin-bottom:18px;border-radius:14px;background:radial-gradient(ellipse at 90% 0%,var(--demo-accent),transparent 80%),#212523}.demo-art span{font-size:10px;letter-spacing:1px}.demo-art strong{font-size:24px;text-shadow:0 2px 12px #000}@media(max-width:650px){.demo-grid{grid-template-columns:1fr}}
+</style>
 </head>
-<body id="top">
-    <div class="bg-decoration" aria-hidden="true"></div>
-    <div class="cursor-glow" aria-hidden="true"></div>
+<body>
+  <!-- Яндекс Метрика: noscript размещён сразу после body -->
+  <noscript><div><img src="https://mc.yandex.ru/watch/114655793" style="position:absolute;left:-9999px" alt=""></div></noscript>
 
-    <header>
-        <a href="#top" class="logo">Jaaabo.dev</a>
-        <nav aria-label="Основная навигация">
-            <a href="#top">Главная</a>
-            <a href="#about">Обо мне</a>
-            <a href="#portfolio">Работы</a>
-            <a href="#process">Процесс</a>
-            <a href="#prices">Цены</a>
-            <a href="#faq">FAQ</a>
-        </nav>
-        <button id="themeToggle" aria-label="Переключить тему" title="Сменить тему">🌙</button>
-    </header>
-
-    <a href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener noreferrer" class="status-badge" id="statusBadge">
-        <span class="status-dot"></span>
-        <span>Свободен для проектов</span>
-    </a>
-
-    <main>
-        <div class="hero">
-            <div class="badge" role="status">
-                <span class="dot" aria-hidden="true"></span>
-                <span>Свободен для новых проектов</span>
-            </div>
-            <h1>Разработка сайтов и автоматизация <span class="gradient">бизнеса на Python.</span></h1>
-            <p>Помогаю бизнесу экономить время: создаю удобные сайты, пишу скрипты для парсинга и настраиваю автоматические рассылки.</p>
-            <div class="cta-group">
-                <a href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                    Обсудить проект
-                </a>
-                <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" title="Написать в MAX" aria-label="Написать в MAX">
-                    Написать в MAX
-                </a>
-            </div>
-
-            <div class="features">
-                <div class="feature">
-                    <div class="feature-icon" aria-hidden="true">⚡</div>
-                    <h3>Сайты под ключ</h3>
-                    <p>Лендинги, визитки, на Flask/FastAPI</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon" aria-hidden="true">🎨</div>
-                    <h3>Автоматизация</h3>
-                    <p>Напишу бота для MAX, настрою парсинг данных</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon" aria-hidden="true">🔧</div>
-                    <h3>Правки и доработки</h3>
-                    <p>Починю ваш текущий сайт или добавлю новый функционал</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <section class="section section-alt reveal" id="about">
-        <div class="section-inner">
-            <h2 class="section-title">Цифры и кейсы</h2>
-            <p class="section-subtitle">Немного фактов обо мне</p>
-
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-icon">🚀</div>
-                    <strong><span class="counter" data-target="3" data-suffix="+">0</span></strong>
-                    <span>проектов</span>
-                </div>
-                <div class="stat">
-                    <div class="stat-icon">⏳</div>
-                    <strong><span class="counter" data-target="1" data-suffix=" года">0</span></strong>
-                    <span>опыта</span>
-                </div>
-                <div class="stat">
-                    <div class="stat-icon">🛡️</div>
-                    <strong><span class="counter" data-target="14" data-suffix=" дней">0</span></strong>
-                    <span>гарантии</span>
-                </div>
-            </div>
-
-            <div class="cases">
-                <div class="case">
-                    <h3>Бот для записи клиентов</h3>
-                    <p>Салон красоты: MAX-бот вместо администратора. −6 часов рутины в неделю.</p>
-                </div>
-                <div class="case">
-                    <h3>Парсер цен</h3>
-                    <p>Магазин: ежедневный сбор цен конкурентов в таблицу. Экономия 2 часа в день.</p>
-                </div>
-                <div class="case">
-                    <h3>Лендинг для мастера</h3>
-                    <p>Страница с формой заявок в Telegram. +40% обращений за месяц.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section reveal" id="portfolio">
-        <div class="section-inner">
-            <h2 class="section-title">Примеры работ</h2>
-            <p class="section-subtitle">Реальные проекты с измеримым результатом</p>
-
-            <div class="portfolio-grid">
-                <a href="" class="portfolio-card" target="_blank" rel="noopener noreferrer">
-                    <div class="portfolio-preview">
-                        <div class="portfolio-mockup">🌐</div>
-                    </div>
-                    <div class="portfolio-info">
-                        <span class="portfolio-tag">Лендинг</span>
-                        <h3>Сайт для мастера маникюра</h3>
-                        <p>+40% заявок за первый месяц</p>
-                        <div class="portfolio-metrics">
-                            <span>⚡ 5 дней</span>
-                            <span>📈 +40%</span>
-                        </div>
-                    </div>
-                </a>
-                <a href="" class="portfolio-card" target="_blank" rel="noopener noreferrer">
-                    <div class="portfolio-preview">
-                        <div class="portfolio-mockup">🤖</div>
-                    </div>
-                    <div class="portfolio-info">
-                        <span class="portfolio-tag">MAX-бот</span>
-                        <h3>Бот записи для салона красоты</h3>
-                        <p>−6 часов рутины в неделю</p>
-                        <div class="portfolio-metrics">
-                            <span>⚡ 3 дня</span>
-                            <span>⏱ −6ч/нед</span>
-                        </div>
-                    </div>
-                </a>
-                <a href="" class="portfolio-card" target="_blank" rel="noopener noreferrer">
-                    <div class="portfolio-preview">
-                        <div class="portfolio-mockup">📊</div>
-                    </div>
-                    <div class="portfolio-info">
-                        <span class="portfolio-tag">Парсер</span>
-                        <h3>Сбор цен конкурентов</h3>
-                        <p>2 часа экономии в день</p>
-                        <div class="portfolio-metrics">
-                            <span>⚡ 2 дня</span>
-                            <span>⏱ −2ч/день</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section class="section section-alt reveal" id="process">
-        <div class="section-inner">
-            <h2 class="section-title">Как проходит работа</h2>
-            <p class="section-subtitle">Прозрачный процесс без сюрпризов — от заявки до гарантии</p>
-
-            <div class="steps">
-                <div class="step">
-                    <div class="step-num">1</div>
-                    <h3>Заявка</h3>
-                    <p>Пишете в Telegram или MAX, описываете задачу. Я задаю уточняющие вопросы.</p>
-                </div>
-                <div class="step">
-                    <div class="step-num">2</div>
-                    <h3>Смета</h3>
-                    <p>Присылаю план работ, точные сроки и фиксированную стоимость. Без «сюрпризов» в процессе.</p>
-                </div>
-                <div class="step">
-                    <div class="step-num">3</div>
-                    <h3>Разработка</h3>
-                    <p>Показываю промежуточные результаты. Вы вносите правки — я оперативно дорабатываю.</p>
-                </div>
-                <div class="step">
-                    <div class="step-num">4</div>
-                    <h3>Гарантия</h3>
-                    <p>После сдачи — 14 дней бесплатных доработок. Если что-то пойдёт не так — исправлю.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section reveal" id="guarantees">
-        <div class="section-inner">
-            <h2 class="section-title">Мои гарантии</h2>
-            <p class="section-subtitle">Чтобы вам было спокойно</p>
-
-            <div class="guarantee-grid">
-                <div class="guarantee">
-                    <div class="guarantee-icon">🛡️</div>
-                    <h3>14 дней на правки</h3>
-                    <p>Любые ошибки по моей вине исправлю бесплатно в течение 2 недель после сдачи.</p>
-                </div>
-                <div class="guarantee">
-                    <div class="guarantee-icon">📄</div>
-                    <h3>Работа по договору</h3>
-                    <p>Фиксируем объём, сроки и стоимость в документе. Без «сюрпризов» в процессе.</p>
-                </div>
-                <div class="guarantee">
-                    <div class="guarantee-icon">💳</div>
-                    <h3>Оплата по этапам</h3>
-                    <p>50% предоплата, 50% после сдачи. Вы платите за результат, а не за обещания.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="prices" class="section section-alt reveal">
-        <div class="section-inner">
-            <h2 class="section-title">Стоимость услуг</h2>
-            <p class="section-subtitle">Выберите нужную услугу, чтобы обсудить детали и оплатить</p>
-
-            <div class="price-grid">
-                <div class="price-card">
-                    <h3>Лендинг под ключ</h3>
-                    <p class="desc">Одностраничный сайт с формой связи</p>
-                    <div class="price"><span>от 4 000 ₽</span></div>
-                    <ul>
-                        <li>Адаптивный дизайн</li>
-                        <li>Настройка формы заявок</li>
-                        <li>Подключение к Telegram</li>
-                    </ul>
-                    <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: auto; width: 100%;">
-                        Обсудить проект
-                    </a>
-                </div>
-
-                <div class="price-card featured">
-                    <h3>Автоматизация</h3>
-                    <p class="desc">Парсинг, боты, скрипты</p>
-                    <div class="price"><span>от 2 000 ₽</span></div>
-                    <ul>
-                        <li>Сбор данных с сайтов</li>
-                        <li>Telegram-боты</li>
-                        <li>Авторассылки</li>
-                    </ul>
-                    <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: auto; width: 100%;">
-                        Обсудить проект
-                    </a>
-                </div>
-
-                <div class="price-card">
-                    <h3>Доработка сайта</h3>
-                    <p class="desc">Правки, починка, новый функционал</p>
-                    <div class="price"><span>от 2 000 ₽</span></div>
-                    <ul>
-                        <li>Исправление ошибок</li>
-                        <li>Добавление блоков</li>
-                        <li>Ускорение загрузки</li>
-                    </ul>
-                    <a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: auto; width: 100%;">
-                        Обсудить проект
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="faq" class="section reveal">
-        <div class="section-inner">
-            <h2 class="section-title">Часто задаваемые вопросы</h2>
-            <p class="section-subtitle">Ответы на то, что обычно спрашивают перед началом работы</p>
-
-            <div class="faq-list">
-                <details class="faq-item">
-                    <summary>Как проходит оплата?</summary>
-                    <p>Работа начинается с предоплаты 50%. Оставшаяся часть вносится после того, как вы проверите результат и подтвердите, что всё работает. Я всегда на связи и готов показать промежуточные результаты.</p>
-                </details>
-                <details class="faq-item">
-                    <summary>Сколько времени занимает разработка?</summary>
-                    <p>В зависимости от сложности задачи, сроки варьируются от 3 до 14 дней. Точный срок я называю после обсуждения деталей. Если задача срочная — сообщите об этом сразу, постараемся найти решение.</p>
-                </details>
-                <details class="faq-item">
-                    <summary>Что нужно для начала работы?</summary>
-                    <p>Всё, что от вас нужно — это описание задачи и примеры (если есть). Например, ссылки на сайты, которые вам нравятся, или примерное описание функционала. Я задам уточняющие вопросы и предложу оптимальное решение.</p>
-                </details>
-                <details class="faq-item">
-                    <summary>Даете ли вы гарантию?</summary>
-                    <p>Да, я предоставляю гарантию 14 дней на все работы. Если в этот период обнаружатся ошибки по моей вине или что-то пойдет не так — я исправлю это бесплатно и в кратчайшие сроки.</p>
-                </details>
-            </div>
-        </div>
-    </section>
-
-    <section class="section reveal" id="custom">
-        <div class="custom-inner">
-            <div class="custom-glow" aria-hidden="true"></div>
-            <h2>Не нашли свой запрос?</h2>
-            <p>Опишите задачу — предложу решение и назову стоимость. Бесплатно и без обязательств.</p>
-            <a href="https://max.ru/u/f9LHodD0cOIF_-jEc0BYp3WGWdwVbbKlQYZsNKLMISwkptB3NId9WvjQ_sM" target="_blank" rel="noopener noreferrer" class="btn btn-primary custom-btn">
-                💬 Обсудить задачу
-            </a>
-        </div>
-    </section>
-
-    <section id="contact-form" class="section section-alt reveal">
-        <div class="form-card">
-            <h3>Или напишите напрямую</h3>
-            <p class="sub">Выберите удобный мессенджер, я отвечу в течение дня</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <a href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;">
-                    ✈️ Написать в Telegram
-                </a>
-                <a href="https://max.ru/u/f9LHodD0cOK2IHhmzxICqiZKUWYRTzjzJVoUicIbj9fr5bVuWosBfMMGP-o" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; padding: 1rem; font-size: 1rem; border-color: var(--primary); color: var(--primary);" title="Написать в MAX" aria-label="Написать в MAX">
-                    💬 Написать в MAX
-                </a>
-            </div>
-            
-            <p style="text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 1.5rem;">
-                Отвечаю быстро. Обычно в течение 15-30 минут.
-            </p>
-        </div>
-    </section>
-
-    <footer>
-        © 2026 · Парсинг, Лендинг, Автоматизация · 
-        <a href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer">Telegram</a>
-    </footer>
-
-    <button id="scrollTopBtn" title="Наверх" aria-label="Вернуться наверх">↑</button>
-    <a href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer" class="mobile-telegram-btn" aria-label="Написать в Telegram">✈️</a>
-
-    <div class="chat-widget">
-        <button class="chat-toggle" id="chatToggle" aria-label="Быстрый вопрос">💬</button>
-        <div class="chat-panel" id="chatPanel">
-            <div class="chat-header">
-                <div class="chat-avatar">👨‍💻</div>
-                <div>
-                    <strong>Jaaabo</strong>
-                    <span>● онлайн</span>
-                </div>
-            </div>
-            <div class="chat-body">
-                <p class="chat-msg">Привет! Что вас интересует?</p>
-                <a href="https://t.me/Jaaabo?text=Привет!%20Интересует%20лендинг" class="chat-option">🌐 Лендинг</a>
-                <a href="https://t.me/Jaaabo?text=Привет!%20Интересует%20парсинг" class="chat-option">🤖 Парсинг / бот</a>
-                <a href="https://t.me/Jaaabo?text=Привет!%20Интересует%20доработка" class="chat-option">🔧 Доработка сайта</a>
-                <a href="https://t.me/Jaaabo" class="chat-option chat-option-accent">✈️ Написать напрямую</a>
-            </div>
-        </div>
+  <a class="skip-link" href="#main-content">К основному содержанию</a>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="logo" href="#home" aria-label="Jaaabo — на главную">Jaaabo<span>.</span></a>
+      <nav class="navlinks" id="navlinks" aria-label="Основная навигация">
+        <a href="#home">Главная</a><a href="#about">Услуги</a><a href="#work">Работы</a><a href="#demos">Демо</a><a href="#process">Процесс</a><a href="#prices">Цены</a><a href="#calculator">Расчёт</a><a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-primary" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Обсудить проект ↗</a>
+        <button class="menu-toggle" id="menuToggle" aria-controls="navlinks" aria-label="Открыть меню" aria-expanded="false">☰</button>
+      </div>
     </div>
+  </header>
 
-    <script>
-        (function () {
-            var root = document.documentElement;
-            var themeToggle = document.getElementById('themeToggle');
-            if (!themeToggle) return;
-            if (root.classList.contains('dark')) themeToggle.textContent = '☀️';
-            themeToggle.addEventListener('click', function () {
-                var isDark = root.classList.toggle('dark');
-                themeToggle.textContent = isDark ? '☀️' : '🌙';
-                try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
-            });
-        })();
+  <main id="main-content">
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow"><span class="pulse"></span> Разработка и автоматизация</div>
+          <h1>Сайты для бизнеса. <span class="gradient">Автоматизация без лишней сложности.</span></h1>
+          <p class="hero-copy">Создаю сайты, через которые удобно знакомиться с вашими услугами и оставлять заявки. Разрабатываю ботов и автоматизацию, чтобы сократить ручную работу. Подбираю решение под вашу задачу и бюджет.</p>
+          <div class="hero-buttons"><a class="btn btn-primary" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Обсудить задачу ↗</a><a class="btn btn-ghost" href="#calculator">Рассчитать стоимость ↓</a></div>
+          <div class="micro-note">Сайты от 4 000 ₽ · Автоматизация от 2 000 ₽ · 14 дней гарантии</div>
+        </div>
+        <div class="hero-visual" aria-label="Иллюстрация панели автоматизации">
+          <div class="orb"></div>
+          <div class="dashboard">
+            <div class="dash-top"><div class="dash-brand">JAAABO / WORKSPACE</div><div class="dash-dots"><i></i><i></i><i></i></div></div>
+            <div class="dash-label">АВТОМАТИЗАЦИЯ ПРОЦЕССОВ</div><div class="dash-title">Меньше рутины.<br><span>Больше результата.</span></div>
+            <div class="dash-chart"><svg viewBox="0 0 360 120" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff713d" stop-opacity=".35"/><stop offset="1" stop-color="#ff713d" stop-opacity="0"/></linearGradient></defs><path d="M0 100 C35 92 40 65 75 72 S120 93 150 60 S200 68 230 42 S275 55 300 22 S340 30 360 8 L360 120 L0 120Z" fill="url(#area)"/><path d="M0 100 C35 92 40 65 75 72 S120 93 150 60 S200 68 230 42 S275 55 300 22 S340 30 360 8" fill="none" stroke="#ff8a58" stroke-width="3"/></svg></div>
+            <div class="dash-bottom"><div class="dash-stat"><strong>24/7</strong><small>Рутинные процессы</small></div><div class="dash-stat"><strong>1 цель</strong><small>Работающий результат</small></div></div>
+          </div>
+          <div class="float-tag one">⚡ <b>Автоматизация</b></div><div class="float-tag two">✦ Решения под задачу</div>
+        </div>
+      </div>
+    </section>
 
-        (function () {
-            const features = document.querySelectorAll('.feature');
-            if (!('IntersectionObserver' in window)) {
-                features.forEach(el => el.classList.add('is-visible'));
-                return;
+    <section class="stats"><div class="container stats-grid">
+      <div class="stat"><strong>6+</strong><span>реализованных проектов</span></div>
+      <div class="stat"><strong>1 год</strong><span>опыта в разработке</span></div>
+      <div class="stat"><strong>14 дней</strong><span>гарантии после сдачи</span></div>
+    </div></section>
+
+    <section class="section" id="about"><div class="container">
+      <div class="section-head reveal"><div class="kicker">Чем могу помочь</div><h2>Решения для <span class="gradient">задач вашего бизнеса.</span></h2><p class="section-lead">Нужен сайт для услуг, удобный приём заявок или меньше ручной работы? Начнём с вашей задачи, а не с готового шаблона.</p></div>
+      <div class="features">
+        <article class="card reveal"><div class="iconbox">⌘</div><h3>Сайты и лендинги</h3><p>Лендинги, сайты услуг и каталоги. Покажем ваши работы, цены и преимущества, добавим удобную связь и адаптацию под телефон.</p></article>
+        <article class="card reveal"><div class="iconbox">✉</div><h3>Telegram-боты</h3><p>Приём заявок, запись клиентов, ответы на частые вопросы и уведомления. Сценарии под ваш рабочий процесс.</p></article>
+        <article class="card reveal"><div class="iconbox">↗</div><h3>Автоматизация и парсинг</h3><p>Сбор цен и данных, обработка таблиц, отчёты и интеграции. Помогу сократить повторяющиеся операции.</p></article>
+      </div>
+    </div></section>
+
+    <section class="section use-cases" id="solutions"><div class="container">
+      <div class="section-head reveal"><div class="kicker">Для разных направлений</div><h2>Что можно <span class="gradient">сделать для вас.</span></h2><p class="section-lead">Примеры задач, с которыми можно обратиться. Это варианты решений, а не список выполненных заказов.</p></div>
+      <div class="features">
+        <article class="card reveal"><h3>Рестораны и кафе</h3><p>Сайт заведения, электронное меню, QR-коды для столов, контакты.</p><a class="solution-link" href="#calculator" data-service="0">Оценить сайт →</a></article>
+        <article class="card reveal"><h3>Ремонт, мебель и услуги</h3><p>Портфолио работ, каталог услуг, калькулятор и заявки на консультацию.</p><a class="solution-link" href="#calculator" data-service="0">Оценить сайт →</a></article>
+        <article class="card reveal"><h3>Малый бизнес</h3><p>Приём обращений, боты, сбор данных, отчёты и автоматизация рутины.</p><a class="solution-link" href="#calculator" data-service="1">Оценить автоматизацию →</a></article>
+      </div>
+    </div></section>
+
+    <section class="section" id="work"><div class="container">
+      <div class="section-head reveal"><div class="kicker">Портфолио</div><h2>Проекты, за которыми <span class="gradient">стоит задача.</span></h2><p class="section-lead">Коммерческий кейс и примеры разработанных решений. Графические превью ниже — иллюстрации, а не скриншоты готовых сайтов.</p></div>
+      <div class="portfolio">
+        <article class="card project project-featured reveal">
+          <div class="restaurant-preview" aria-hidden="true">
+            <div class="restaurant-window">
+              <div class="restaurant-bar"><i></i><i></i><i></i><span>WEB / RESTAURANT</span></div>
+              <div class="restaurant-screen">
+                <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M43 19Q38 12 44 7Q50 4 56 7Q62 12 57 19Q59 26 68 35Q87 51 85 69Q83 89 50 90Q17 89 15 69Q13 51 32 35Q41 26 43 19Z"/><path d="M47 19Q26 48 32 76M50 20Q43 49 47 80M54 19Q73 48 66 76M55 22Q58 48 56 80M42 14Q50 17 58 14"/></svg>
+                <strong>Хинкальная №1</strong><small>Ресторан · Веб-проект</small>
+              </div>
+            </div>
+            <span class="preview-note">Иллюстрация проекта · не скриншот сайта</span>
+          </div>
+          <div class="project-body">
+            <span class="tag">Коммерческий проект · Ресторан</span>
+            <div class="case-label">Разработка сайта и QR-кодов</div>
+            <h3>Хинкальная №1</h3>
+            <p>По заказу ресторана разработал лендинг и подготовил QR-коды для столов. Цель проекта — удобный способ познакомить гостей с заведением в цифровом формате.</p>
+            <div class="case-deliverables"><span>Лендинг</span><span>QR-коды для столов</span></div>
+            <a class="btn btn-primary" href="#calculator">Рассчитать похожий проект ↓</a>
+          </div>
+        </article>
+        <article class="card project reveal"><div class="project-preview"><div class="mock-window"><div class="mock-bar"><i></i><i></i><i></i></div><div class="mock-line orange"></div><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-blocks"><i></i><i></i><i></i></div></div></div><div class="project-body"><span class="tag">Демо · Telegram · Запись</span><h3>Бот записи для салона красоты</h3><p>Автоматизация записи клиентов и хранения заявок, чтобы администратору было проще управлять расписанием.</p><div class="project-result">Фокус: меньше ручной переписки</div></div></article>
+        <article class="card project reveal"><div class="project-preview"><div class="mock-window"><div class="mock-bar"><i></i><i></i><i></i></div><div class="mock-line orange"></div><div class="mock-line short"></div><div class="mock-blocks"><i></i><i></i><i></i></div><div class="mock-line"></div></div></div><div class="project-body"><span class="tag">Python · Парсинг</span><h3>Парсер цен</h3><p>Сбор и структурирование информации о ценах, чтобы быстрее отслеживать изменения и сравнивать предложения.</p><div class="project-result">Фокус: экономия времени на мониторинге</div></div></article>
+        <article class="card project reveal"><div class="project-preview"><div class="mock-window"><div class="mock-bar"><i></i><i></i><i></i></div><div class="mock-line orange"></div><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-blocks"><i></i><i></i><i></i></div></div></div><div class="project-body"><span class="tag">Web · Лендинг</span><h3>Сайт для мастера</h3><p>Страница услуг с понятной подачей информации и удобным способом связаться и оставить заявку.</p><div class="project-result">Фокус: больше понятных обращений</div></div></article>
+      </div>
+    </div></section>
+
+    <section class="section" id="demos"><div class="container"><div class="section-head reveal"><div class="kicker">Демонстрационные сайты</div><h2>Посмотрите, как может выглядеть <span class="gradient">ваш сайт.</span></h2><p class="section-lead">Четыре интерактивных концепта. Это не выполненные заказы; оформление и функции адаптируются под ваш бизнес.</p></div><div class="demo-grid"><article class="card reveal"><div class="demo-art" style="--demo-accent:#c99b62"><span>РЕСТОРАН / КОНЦЕПТ</span><strong>Ресторан</strong></div><h3>Ресторан</h3><p>Меню, атмосфера, контактные кнопки</p><a class="btn btn-ghost" href="demo/restaurant.html">Открыть демосайт ↗</a></article><article class="card reveal"><div class="demo-art" style="--demo-accent:#ff854c"><span>АВТОСЕРВИС / КОНЦЕПТ</span><strong>Автосервис</strong></div><h3>Автосервис</h3><p>Услуги и форма записи</p><a class="btn btn-ghost" href="demo/auto.html">Открыть демосайт ↗</a></article><article class="card reveal"><div class="demo-art" style="--demo-accent:#9dc6b0"><span>РЕМОНТ / КОНЦЕПТ</span><strong>Ремонт квартир</strong></div><h3>Ремонт квартир</h3><p>Услуги, этапы и заявка на смету</p><a class="btn btn-ghost" href="demo/repair.html">Открыть демосайт ↗</a></article><article class="card reveal"><div class="demo-art" style="--demo-accent:#d6af89"><span>МЕБЕЛЬ / КОНЦЕПТ</span><strong>Мебель на заказ</strong></div><h3>Мебель на заказ</h3><p>Каталог направлений и заявка на замер</p><a class="btn btn-ghost" href="demo/furniture.html">Открыть демосайт ↗</a></article></div></div></section>
+<section class="section" id="process"><div class="container">
+      <div class="section-head reveal"><div class="kicker">Как работаем</div><h2>Понятный процесс. <span class="gradient">Без сюрпризов.</span></h2><p class="section-lead">Вы знаете, что происходит на каждом этапе и за что платите.</p></div>
+      <div class="process">
+        <article class="card reveal"><div class="step-num">01</div><h3>Обсуждаем задачу</h3><p>Разбираемся, что нужно автоматизировать или создать и какой результат важен.</p></article>
+        <article class="card reveal"><div class="step-num">02</div><h3>Согласуем план</h3><p>Фиксируем объём работ, сроки, стоимость и основные функции проекта.</p></article>
+        <article class="card reveal"><div class="step-num">03</div><h3>Разрабатываю</h3><p>Создаю решение, показываю промежуточный результат и учитываю согласованные правки.</p></article>
+        <article class="card reveal"><div class="step-num">04</div><h3>Передаю проект</h3><p>Проверяем работу, передаю готовый результат и остаюсь на связи в гарантийный период.</p></article>
+      </div>
+    </div></section>
+
+    <section class="section" id="guarantee"><div class="container">
+      <div class="section-head reveal"><div class="kicker">Надёжность</div><h2>Договорённости — <span class="gradient">на берегу.</span></h2></div>
+      <div class="guarantee-grid">
+        <article class="card guarantee-card reveal"><div class="check">✓</div><div><h3>14 дней гарантии</h3><p>В течение 14 дней после сдачи исправляю ошибки, связанные с выполненной работой.</p></div></article>
+        <article class="card guarantee-card reveal"><div class="check">✓</div><div><h3>Работа по договорённости</h3><p>До начала разработки согласуем задачу, объём, сроки и стоимость.</p></div></article>
+        <article class="card guarantee-card reveal"><div class="check">✓</div><div><h3>Оплата 50/50</h3><p>Предоплата 50%, оставшаяся часть — после выполнения согласованной работы.</p></div></article>
+        <article class="card guarantee-card reveal"><div class="check">✓</div><div><h3>Связь напрямую</h3><p>Общение и обсуждение проекта без лишних посредников.</p></div></article>
+      </div>
+    </div></section>
+
+    <section class="section" id="prices"><div class="container">
+      <div class="section-head reveal"><div class="kicker">Стоимость</div><h2>Понятные стартовые <span class="gradient">цены.</span></h2><p class="section-lead">Итоговая стоимость зависит от задачи и объёма работ. Перед началом согласуем цену.</p></div>
+      <div class="prices">
+        <article class="card price-card reveal"><div class="price-title">САЙТ / ЛЕНДИНГ</div><div class="price">от 4 000 ₽</div><p class="price-desc">Страница для презентации услуги, продукта или бизнеса.</p><ul class="price-list"><li>Адаптация под телефон</li><li>Блоки о продукте и услугах</li><li>Форма или кнопка связи</li></ul><a class="btn btn-ghost" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Обсудить сайт ↗</a></article>
+        <article class="card price-card featured reveal"><span class="popular">Популярное направление</span><div class="price-title">АВТОМАТИЗАЦИЯ</div><div class="price">от 2 000 ₽</div><p class="price-desc">Боты, парсеры и автоматизация рутинных процессов.</p><ul class="price-list"><li>Разбор задачи</li><li>Разработка под сценарий</li><li>Проверка и запуск</li></ul><a class="btn btn-primary" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Обсудить задачу ↗</a></article>
+        <article class="card price-card reveal"><div class="price-title">ДОРАБОТКА</div><div class="price">от 2 000 ₽</div><p class="price-desc">Исправления, новые функции и улучшения существующего проекта.</p><ul class="price-list"><li>Анализ текущей реализации</li><li>Добавление функций</li><li>Проверка изменений</li></ul><a class="btn btn-ghost" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Обсудить доработку ↗</a></article>
+      </div>
+    </div></section>
+
+    <section class="jj-calculator" id="calculator">
+      <div class="jj-calc-inner">
+        <div class="jj-calc-heading"><span class="jj-calc-label">КАЛЬКУЛЯТОР СТОИМОСТИ</span><h2>Рассчитаем ваш проект</h2><p>Выберите услугу и расскажите, что вам нужно.</p></div>
+        <div class="jj-calc-card">
+          <label for="jj-service">Что нужно разработать?</label>
+          <select id="jj-service" name="service">
+            <option value="4000">Сайт / лендинг — от 4 000 ₽</option>
+            <option value="2000">Бот / автоматизация — от 2 000 ₽</option>
+            <option value="2000">Доработка проекта — от 2 000 ₽</option>
+          </select>
+          <label>Что должно быть в проекте?</label>
+          <div class="jj-calc-options">
+            <label><input type="checkbox" value="Форма заявок" data-price="500"> Форма заявок (+500 ₽)</label>
+            <label><input type="checkbox" value="Интеграция с Telegram" data-price="1000"> Интеграция с Telegram (+1 000 ₽)</label>
+            <label><input type="checkbox" value="Интеграция с MAX" data-price="1000"> Интеграция с MAX (+1 000 ₽)</label>
+            <label><input type="checkbox" value="Админ-панель" data-price="2000"> Админ-панель (+2 000 ₽)</label>
+            <label><input type="checkbox" value="База данных" data-price="1000"> База данных (+1 000 ₽)</label>
+            <label><input type="checkbox" value="Автоматизация процессов" data-price="1500"> Автоматизация процессов (+1 500 ₽)</label>
+          </div>
+          <label for="jj-goal">Кратко опишите задачу</label>
+          <textarea id="jj-goal" rows="4" placeholder="Например: сайт для мебельной мастерской с портфолио и заявками на замер..."></textarea>
+          <div class="jj-calc-result"><span>Предварительная стоимость</span><strong id="jj-price" aria-live="polite">от 4 000 ₽</strong><small>Доплаты за функции ориентировочные. Итоговая стоимость уточняется после обсуждения задачи.</small></div>
+          <button type="button" id="jj-copy" class="jj-calc-button">Скопировать заявку</button>
+          <p id="jj-status" class="jj-calc-status" aria-live="polite"></p>
+          <div class="jj-calc-links"><a href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Отправить в Telegram ↗</a><a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener">Отправить в MAX ↗</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq"><div class="container">
+      <div class="section-head reveal"><div class="kicker">FAQ</div><h2>Частые <span class="gradient">вопросы.</span></h2></div>
+      <div class="faq">
+        <details class="reveal"><summary>Сколько времени занимает разработка?</summary><p>Срок зависит от сложности и объёма проекта. После обсуждения задачи я обозначу реалистичный срок до начала работы.</p></details>
+        <details class="reveal"><summary>Можно ли заказать только одну функцию?</summary><p>Да. Можно разработать отдельную функцию, интеграцию или доработать уже существующий сайт или бот.</p></details>
+        <details class="reveal"><summary>Как происходит оплата?</summary><p>Стандартная схема — 50% перед началом и 50% после выполнения согласованной работы.</p></details>
+        <details class="reveal"><summary>Что входит в гарантию?</summary><p>14 дней после сдачи проекта на исправление ошибок, связанных с выполненной работой. Новые функции и изменение требований обсуждаются отдельно.</p></details>
+        <details class="reveal"><summary>Можно ли сначала обсудить идею?</summary><p>Конечно. Напиши, какую задачу хочешь решить. Обсудим возможный вариант реализации и ориентировочную стоимость.</p></details>
+        <details class="reveal"><summary>Работаешь с небольшими проектами?</summary><p>Да. Можно начать с небольшой автоматизации или простой страницы и постепенно развивать решение.</p></details>
+      </div>
+    </div></section>
+
+    <section class="section" id="contact"><div class="container">
+      <div class="cta reveal"><div class="kicker">Есть задача?</div><h2>Обсудим, что нужно <span class="gradient">вашему бизнесу.</span></h2><p>Расскажите о задаче: новый сайт, заявки или автоматизация. Предложу вариант реализации и предварительную стоимость.</p>
+        <div class="hero-buttons"><a class="btn btn-primary" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Написать в Telegram ↗</a><a class="btn btn-ghost" href="https://max.ru/se15052383_bot" target="_blank" rel="noopener">Написать в MAX ↗</a></div>
+      </div>
+    </div></section>
+
+    <section class="lead-section" id="lead-contact">
+      <span class="lead-label">ПРЯМАЯ СВЯЗЬ С РАЗРАБОТЧИКОМ</span>
+      <h2>Есть вопросы?<span>Напишите напрямую.</span></h2>
+      <p>Можно начать с короткого описания задачи. Обсудим функции, сроки и бюджет до начала разработки.</p>
+      <a class="btn btn-primary" href="https://t.me/Jaaabo" target="_blank" rel="noopener noreferrer">Обсудить проект ↗</a>
+      <small>Отвечаю лично и обсуждаю каждый проект индивидуально.</small>
+    </section>
+
+  </main>
+
+  <footer><div class="container footer-inner">
+    <div><a class="logo" href="#home">Jaaabo<span>.</span></a><div style="margin-top:7px">Сайты · боты · автоматизация</div></div>
+    <div class="footer-links"><a href="#about">Услуги</a><a href="#work">Проекты</a><a href="#demos">Демосайты</a><a href="#prices">Цены</a><a href="#calculator">Калькулятор</a><a href="https://t.me/Jaaabo" target="_blank" rel="noopener">Telegram</a><a href="https://max.ru/se15052383_bot" target="_blank" rel="noopener">MAX</a></div>
+    <div>© <span id="year">2026</span> Jaaabo</div>
+  </div></footer>
+
+  <div class="chat-panel" id="chatPanel" aria-hidden="true">
+    <h3>Привет! 👋</h3><p>Выбери, где удобнее обсудить задачу.</p>
+    <a class="chat-option" href="https://t.me/Foruuuum_bot" target="_blank" rel="noopener">Telegram — обсудить проект ↗</a>
+    <a class="chat-option" href="https://max.ru/se15052383_bot" target="_blank" rel="noopener">MAX — написать ↗</a>
+  </div>
+  <button class="chat-toggle" id="chatToggle" aria-controls="chatPanel" aria-label="Открыть чат" aria-expanded="false">✦</button>
+  <button class="to-top" id="toTop" aria-label="Наверх">↑</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuToggle = document.getElementById('menuToggle');
+      const navlinks = document.getElementById('navlinks');
+      if (menuToggle && navlinks) {
+        menuToggle.addEventListener('click', function () {
+          const opened = navlinks.classList.toggle('open');
+          menuToggle.setAttribute('aria-expanded', String(opened));
+        });
+        navlinks.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            navlinks.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      const chatToggle = document.getElementById('chatToggle');
+      const chatPanel = document.getElementById('chatPanel');
+      if (chatToggle && chatPanel) {
+        chatToggle.addEventListener('click', function () {
+          const opened = chatPanel.classList.toggle('open');
+          chatPanel.setAttribute('aria-hidden', String(!opened));
+          chatToggle.setAttribute('aria-expanded', String(opened));
+          chatToggle.textContent = opened ? '×' : '✦';
+        });
+      }
+
+      const toTop = document.getElementById('toTop');
+      if (toTop) {
+        window.addEventListener('scroll', function () {
+          toTop.classList.toggle('show', window.scrollY > 500);
+        }, { passive: true });
+        toTop.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      const year = document.getElementById('year');
+      if (year) year.textContent = new Date().getFullYear();
+
+      const revealItems = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
             }
-            const observer = new IntersectionObserver((entries, obs) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        obs.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            features.forEach(el => {
-                el.classList.add('js-reveal');
-                observer.observe(el);
-            });
-        })();
+          });
+        }, { threshold: 0.12 });
+        document.documentElement.classList.add('motion-enabled');
+        revealItems.forEach(function (item) { observer.observe(item); });
+      } else {
+        revealItems.forEach(function (item) { item.classList.add('visible'); });
+      }
 
-        (function () {
-            const reveals = document.querySelectorAll('.reveal');
-            if (!('IntersectionObserver' in window)) {
-                reveals.forEach(el => el.classList.add('active'));
-                return;
+      // Калькулятор: единый обработчик, без повторяющихся скриптов.
+      const service = document.getElementById('jj-service');
+      const price = document.getElementById('jj-price');
+      const copyButton = document.getElementById('jj-copy');
+      const status = document.getElementById('jj-status');
+      const goalInput = document.getElementById('jj-goal');
+      let calcStarted = false;
+
+      function reachGoal(goalName) {
+        if (typeof window.ym === 'function') {
+          try { window.ym(114655793, 'reachGoal', goalName); } catch (error) { /* Аналитика не должна мешать сайту. */ }
+        }
+      }
+
+      function trackCalcStart() {
+        if (!calcStarted) {
+          calcStarted = true;
+          reachGoal('calc_started');
+        }
+      }
+
+      function calculateTotal() {
+        const basePrice = service ? Number(service.value) || 0 : 0;
+        const optionsPrice = Array.from(document.querySelectorAll('.jj-calc-options input[type="checkbox"]:checked'))
+          .reduce(function (sum, checkbox) {
+            return sum + (Number(checkbox.dataset.price) || 0);
+          }, 0);
+        return basePrice + optionsPrice;
+      }
+
+      function updatePrice() {
+        if (!service || !price) return;
+        const amount = calculateTotal();
+        price.textContent = 'от ' + amount.toLocaleString('ru-RU') + ' ₽';
+      }
+
+      if (service && price) {
+        service.addEventListener('change', function () {
+          trackCalcStart();
+          updatePrice();
+          reachGoal('calc_service_selected');
+        });
+        service.addEventListener('input', updatePrice);
+        updatePrice();
+      }
+
+      if (goalInput) goalInput.addEventListener('input', trackCalcStart);
+
+      document.querySelectorAll('.jj-calc-options input[type="checkbox"]').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+          trackCalcStart();
+          updatePrice();
+          reachGoal('calc_option_changed');
+        });
+      });
+
+      document.querySelectorAll('[data-service]').forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (service) { service.selectedIndex = Number(link.dataset.service); service.dispatchEvent(new Event('change')); }
+        });
+      });
+
+      if (copyButton && status && service && goalInput) {
+        copyButton.addEventListener('click', async function () {
+          trackCalcStart();
+          const selectedService = service.options[service.selectedIndex].text;
+          const selectedOptions = Array.from(document.querySelectorAll('.jj-calc-options input:checked'))
+            .map(function (item) { return item.value; });
+          const amount = calculateTotal().toLocaleString('ru-RU');
+          const message = [
+            'Заявка с сайта Jaaabo',
+            '',
+            'Услуга: ' + selectedService,
+            'Предварительная стоимость: от ' + amount + ' ₽',
+            '',
+            'Дополнительные пожелания: ' + (selectedOptions.length ? selectedOptions.join(', ') : 'Не указаны'),
+            '',
+            'Описание задачи: ' + (goalInput.value.trim() || 'Не указано')
+          ].join('\n');
+
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(message);
+            } else {
+              const temporary = document.createElement('textarea');
+              temporary.value = message;
+              temporary.style.position = 'fixed';
+              temporary.style.opacity = '0';
+              document.body.appendChild(temporary);
+              temporary.select();
+              const copied = document.execCommand('copy');
+              temporary.remove();
+              if (!copied) throw new Error('Clipboard copy failed');
             }
-            const observer = new IntersectionObserver((entries, obs) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        obs.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            reveals.forEach(el => observer.observe(el));
-        })();
+            reachGoal('calc_request_copied');
+            status.textContent = 'Заявка скопирована! Теперь отправь её в Telegram или MAX.';
+          } catch (error) {
+            status.textContent = 'Не удалось скопировать. Выдели заявку вручную или открой сайт через HTTPS.';
+          }
+        });
+      }
 
-        (function () {
-            const btn = document.getElementById('scrollTopBtn');
-            if (!btn) return;
-            window.addEventListener('scroll', () => {
-                btn.style.display = window.scrollY > 400 ? 'block' : 'none';
-            }, { passive: true });
-            btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-        })();
-
-        (function () {
-            var finePointer = window.matchMedia('(pointer: fine)').matches;
-            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (!finePointer || reducedMotion) return;
-            var glow = document.querySelector('.cursor-glow');
-            if (!glow) return;
-            var mx = window.innerWidth / 2, my = window.innerHeight / 2;
-            var cx = mx, cy = my, rafId = null, isMoving = false;
-            function tick() {
-                cx += (mx - cx) * 0.12;
-                cy += (my - cy) * 0.12;
-                glow.style.transform = 'translate(' + (cx - glow.offsetWidth / 2) + 'px, ' + (cy - glow.offsetHeight / 2) + 'px)';
-                rafId = requestAnimationFrame(tick);
-            }
-            document.addEventListener('mousemove', function (e) {
-                mx = e.clientX; my = e.clientY;
-                if (!isMoving) {
-                    isMoving = true;
-                    glow.classList.add('is-active');
-                    if (!rafId) rafId = requestAnimationFrame(tick);
-                }
-            }, { passive: true });
-            document.addEventListener('mouseleave', () => glow.classList.remove('is-active'));
-            document.addEventListener('mouseenter', () => { if (isMoving) glow.classList.add('is-active'); });
-            document.addEventListener('visibilitychange', function () {
-                if (document.hidden) { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
-                else if (isMoving) { rafId = requestAnimationFrame(tick); }
-            });
-        })();
-
-        (function () {
-            var counters = document.querySelectorAll('.counter');
-            if (!counters.length) return;
-            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reducedMotion) {
-                counters.forEach(function (el) {
-                    el.textContent = el.dataset.target + (el.dataset.suffix || '');
-                });
-                return;
-            }
-            function animate(el) {
-                var target = parseInt(el.dataset.target, 10) || 0;
-                var suffix = el.dataset.suffix || '';
-                var duration = 1600, start = null, done = false;
-                function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
-                function step(ts) {
-                    if (start === null) start = ts;
-                    var progress = Math.min((ts - start) / duration, 1);
-                    el.textContent = Math.floor(easeOutExpo(progress) * target) + suffix;
-                    if (progress < 1) requestAnimationFrame(step);
-                    else if (!done) { done = true; el.textContent = target + suffix; el.classList.add('done'); }
-                }
-                requestAnimationFrame(step);
-            }
-            if (!('IntersectionObserver' in window)) { counters.forEach(animate); return; }
-            var obs = new IntersectionObserver(function (entries, o) {
-                entries.forEach(function (e) {
-                    if (e.isIntersecting) { animate(e.target); o.unobserve(e.target); }
-                });
-            }, { threshold: 0.5 });
-            counters.forEach(function (el) { obs.observe(el); });
-        })();
-
-        (function () {
-            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reducedMotion) return;
-            var toastEl = null, toastTimer = null;
-            function ensureToast() {
-                if (toastEl) return toastEl;
-                toastEl = document.createElement('div');
-                toastEl.className = 'toast';
-                toastEl.setAttribute('role', 'status');
-                toastEl.setAttribute('aria-live', 'polite');
-                toastEl.innerHTML = '<span class="toast-icon" aria-hidden="true">✈️</span><span class="toast-text">Открываю Telegram…</span>';
-                document.body.appendChild(toastEl);
-                return toastEl;
-            }
-            function showToast(message) {
-                var el = ensureToast();
-                el.querySelector('.toast-text').textContent = message;
-                el.classList.remove('show');
-                void el.offsetWidth;
-                el.classList.add('show');
-                if (toastTimer) clearTimeout(toastTimer);
-                toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2800);
-            }
-            var links = document.querySelectorAll('a[href*="t.me"], a[href*="max.ru"]');
-            links.forEach(function (link) {
-                link.addEventListener('click', function (e) {
-                    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-                    var text = (link.textContent || '').toLowerCase();
-                    var msg = 'Открываю Telegram… Отвечу в течение 15-30 минут';
-                    if (link.href.indexOf('max.ru') !== -1 || text.indexOf('max') !== -1) {
-                        msg = 'Открываю MAX… Отвечу в течение 15-30 минут';
-                    } else if (link.href.indexOf('text=') !== -1) {
-                        msg = 'Открываю чат с выбранной услугой…';
-                    }
-                    showToast(msg);
-                });
-            });
-        })();
-
-        (function () {
-            'use strict';
-            var toggle = document.getElementById('chatToggle');
-            var panel  = document.getElementById('chatPanel');
-            if (!toggle || !panel) return;
-
-            function close() { panel.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
-            function open()  { panel.classList.add('open');    toggle.setAttribute('aria-expanded', 'true'); }
-            function isOpen(){ return panel.classList.contains('open'); }
-
-            toggle.setAttribute('aria-controls', 'chatPanel');
-            toggle.setAttribute('aria-expanded', 'false');
-
-            toggle.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                isOpen() ? close() : open();
-            });
-
-            document.addEventListener('click', function (e) {
-                if (!isOpen()) return;
-                if (!panel.contains(e.target) && !toggle.contains(e.target)) close();
-            });
-
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && isOpen()) close();
-            });
-
-            panel.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () { setTimeout(close, 200); });
-            });
-        })();
-
-        (function () {
-            var header = document.querySelector('header');
-            if (!header) return;
-            window.addEventListener('scroll', function () {
-                header.classList.toggle('scrolled', window.scrollY > 20);
-            }, { passive: true });
-        })();
-
-        (function () {
-            var badge = document.getElementById('statusBadge');
-            if (!badge) return;
-            var shown = false;
-            window.addEventListener('scroll', function () {
-                var shouldShow = window.scrollY > 500;
-                if (shouldShow !== shown) {
-                    shown = shouldShow;
-                    badge.classList.toggle('show', shown);
-                }
-            }, { passive: true });
-        })();
-    </script>
+      // Единое отслеживание кликов по ссылкам Telegram и MAX.
+      document.addEventListener('click', function (event) {
+        const link = event.target.closest('a');
+        if (!link) return;
+        const href = link.href || '';
+        if (href.includes('t.me/')) reachGoal('telegram_click');
+        if (href.includes('max.ru/')) reachGoal('max_click');
+        if (link.getAttribute('href') === '#calculator') reachGoal('calculator_open');
+        if (link.getAttribute('href') === '#work') reachGoal('portfolio_open');
+      });
+    });
+  </script>
 </body>
 </html>
